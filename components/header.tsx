@@ -2,14 +2,18 @@
 
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { User } from "lucia"
 
 import { cn } from "@/lib/utils"
 import { UserButton } from "@daveyplate/better-auth-ui"
-import { Home, Users, Heart, Bell, Search } from "lucide-react"
+import { Home, Users, Bell, Search } from "lucide-react"
 
 interface HeaderProps {
-  user?: User | null
+  user?: {
+    id: string;
+    name?: string | null;
+    email?: string | null;
+    image?: string | null;
+  } | null
 }
 
 export function Header({ user }: HeaderProps) {

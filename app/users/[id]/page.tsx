@@ -4,15 +4,18 @@ import { PostList } from "@/components/PostList"
 import { UserProfile } from "@/components/UserProfile"
 import { getUserProfile } from "@/actions/users"
 import { getUserPosts, reactToPost } from "@/actions/posts"
+import { headers } from "next/headers"
 
-interface UserPageProps {
+type UserPageProps = {
   params: {
     id: string
   }
 }
 
 export default async function UserPage({ params }: UserPageProps) {
-  const session = await auth()
+  const session = await auth.api.getSession({
+    headers: await headers()
+  });
   
   // Redirect to login if not authenticated
   if (!session?.user) {

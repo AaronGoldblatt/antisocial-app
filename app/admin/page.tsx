@@ -1,18 +1,30 @@
 import { desc } from "drizzle-orm"
+import { redirect } from "next/navigation"
 
+import { auth } from "@/auth"
 import { db } from "@/database/db"
-import { todos } from "@/database/schema"
-
+import { posts } from "@/database/schema/social"
 import { Button } from "@/components/ui/button"
-import { deleteTodo } from "@/actions/todos"
-
+import { headers } from "next/headers"
 export const dynamic = 'force-dynamic'
 
 export default async function AdminPage() {
+    const session = await auth.api.getSession({
+        headers: await headers()
+      });
     
-    /* YOUR AUTHORIZATION CHECK HERE */
+    // Ensure only admin users can access this page
+    // For now, we'll just check if the user is authenticated
+    if (!session?.user) {
+        redirect("/auth/sign-in")
+    }
+    
+    // In a real app, you'd check for admin role
+    // if (!session.user.isAdmin) {
+    //     redirect("/")
+    // }
 
-    const allTodos = await db.query.todos.findMany({
+    const allPosts = await db.query.posts.findMany({
         with: {
             user: {
                 columns: {
@@ -20,8 +32,17 @@ export default async function AdminPage() {
                 }
             }
         },
-        orderBy: [desc(todos.createdAt)]
+        orderBy: [desc(posts.createdAt)]
     });
+
+    // Placeholder for deleting a post (not implemented yet)
+    async function deletePost(formData: FormData) {
+        "use server"
+        const id = formData.get("id") as string
+        console.log("Not implemented: Delete post with ID:", id)
+        // In a real implementation:
+        // await db.delete(posts).where(eq(posts.id, id))
+    }
 
     return (
         <main className="py-8 px-4">
@@ -33,23 +54,27 @@ export default async function AdminPage() {
                         <thead className="bg-muted">
                             <tr>
                                 <th className="py-2 px-4 text-left">User</th>
-                                <th className="py-2 px-4 text-left">Todo</th>
+                                <th className="py-2 px-4 text-left">Post Content</th>
                                 <th className="py-2 px-4 text-center">Actions</th>
                             </tr>
                         </thead>
                         <tbody>
-                            {allTodos.length === 0 && (
+                            {allPosts.length === 0 && (
                                 <tr>
-                                    <td colSpan={3} className="py-2 px-4 text-center">No todos found</td>
+                                    <td colSpan={3} className="py-2 px-4 text-center">No posts found</td>
                                 </tr>
                             )}
-                            {allTodos.map((todo) => (
-                                <tr key={todo.id} className="border-t">
-                                    <td className="py-2 px-4">{todo.user.name}</td>
-                                    <td className="py-2 px-4">{todo.title}</td>
+                            {allPosts.map((post) => (
+                                <tr key={post.id} className="border-t">
+                                    <td className="py-2 px-4">{post.user.name}</td>
+                                    <td className="py-2 px-4">
+                                        {post.content.length > 50 
+                                            ? `${post.content.substring(0, 50)}...` 
+                                            : post.content}
+                                    </td>
                                     <td className="py-2 px-4 text-center">
-                                        <form action={deleteTodo}>
-                                            <input type="hidden" name="id" value={todo.id} />
+                                        <form action={deletePost}>
+                                            <input type="hidden" name="id" value={post.id} />
                                             <Button
                                                 variant="destructive"
                                                 size="sm"

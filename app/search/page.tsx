@@ -1,9 +1,11 @@
 import { redirect } from "next/navigation"
-import { auth } from "@/auth"
-import { search } from "@/actions/search"
+import { auth } from "@/lib/auth"
+import { headers } from "next/headers"
 
 export default async function SearchPage() {
-  const session = await auth()
+  const session = await auth.api.getSession({
+    headers: await headers()
+  });
   
   // Redirect to login if not authenticated
   if (!session?.user) {

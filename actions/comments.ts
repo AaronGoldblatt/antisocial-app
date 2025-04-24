@@ -3,14 +3,17 @@
 import { z } from "zod"
 import { revalidatePath } from "next/cache"
 import { redirect } from "next/navigation"
-import { auth } from "@/auth"
+import { auth } from "@/lib/auth"
 import { db } from "@/database/db"
 import { comments, NewComment, posts, reactions, ReactionType } from "@/database/schema/social"
 import { and, count, desc, eq, exists, gt, inArray, isNull, or, sql } from "drizzle-orm"
+import { headers } from "next/headers"
 
 // Create a new comment
 export async function createComment(data: { postId: string; content: string; imageUrl?: string }) {
-  const session = await auth()
+  const session = await auth.api.getSession({
+    headers: await headers()
+  });
   if (!session?.user?.id) {
     throw new Error("Not authenticated")
   }
@@ -34,7 +37,9 @@ export async function createComment(data: { postId: string; content: string; ima
 
 // React to a comment (like, dislike, super dislike)
 export async function reactToComment(commentId: string, type: string) {
-  const session = await auth()
+  const session = await auth.api.getSession({
+    headers: await headers()
+  });
   if (!session?.user?.id) {
     throw new Error("Not authenticated")
   }

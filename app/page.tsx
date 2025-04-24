@@ -4,9 +4,13 @@ import { PostList } from "@/components/PostList"
 import { CreatePost } from "@/components/CreatePost"
 import { getFeedPosts } from "@/actions/posts"
 import { reactToPost } from "@/actions/posts"
+import { headers } from "next/headers"
 
 export default async function Home() {
-  const session = await auth()
+  // Check if user is authenticated
+  const session = await auth.api.getSession({
+    headers: await headers()
+  });
   
   // Redirect to login if not authenticated
   if (!session?.user) {

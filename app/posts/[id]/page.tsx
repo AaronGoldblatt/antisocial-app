@@ -1,20 +1,23 @@
 import { notFound, redirect } from "next/navigation"
-import { auth } from "@/auth"
+import { auth } from "@/lib/auth"
 import { PostItem } from "@/components/PostItem"
 import { CreateComment } from "@/components/CreateComment"
 import { CommentItem } from "@/components/CommentItem"
 import { getPost } from "@/actions/posts"
 import { reactToPost } from "@/actions/posts"
 import { reactToComment } from "@/actions/comments"
+import { headers } from "next/headers"
 
-interface PostPageProps {
+type PostPageProps = {
   params: {
     id: string
   }
 }
 
 export default async function PostPage({ params }: PostPageProps) {
-  const session = await auth()
+  const session = await auth.api.getSession({
+    headers: await headers()
+  });
   
   // Redirect to login if not authenticated
   if (!session?.user) {
@@ -38,7 +41,7 @@ export default async function PostPage({ params }: PostPageProps) {
             
             <div className="flex flex-col gap-4">
               {post.comments && post.comments.length > 0 ? (
-                post.comments.map((comment) => (
+                post.comments.map((comment: any) => (
                   <CommentItem 
                     key={comment.id} 
                     comment={comment} 

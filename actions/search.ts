@@ -6,6 +6,7 @@ import { db } from "@/database/db"
 import { posts } from "@/database/schema/social"
 import { users } from "@/database/schema/auth"
 import { desc, eq, ilike, or } from "drizzle-orm"
+import { headers } from "next/headers"
 
 // Search schema
 const searchSchema = z.object({
@@ -14,7 +15,9 @@ const searchSchema = z.object({
 
 // Search functionality (placeholder for now)
 export async function search(data: z.infer<typeof searchSchema>) {
-  const session = await auth()
+  const session = await auth.api.getSession({
+    headers: await headers()
+  });
   
   const query = data.query.trim()
   if (!query) {
@@ -35,7 +38,9 @@ export async function search(data: z.infer<typeof searchSchema>) {
 
 // Get user suggestions for the current user
 export async function getUserSuggestions() {
-  const session = await auth()
+  const session = await auth.api.getSession({
+    headers: await headers()
+  });
   if (!session?.user?.id) {
     return []
   }

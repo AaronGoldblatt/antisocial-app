@@ -8,10 +8,13 @@ import { db } from "@/database/db"
 import { NewPost, posts, reactions, ReactionType, comments, follows } from "@/database/schema/social"
 import { and, count, desc, eq, exists, gt, inArray, isNull, or, sql } from "drizzle-orm"
 import { users } from "@/database/schema/auth"
+import { headers } from "next/headers"
 
 // Create a new post
 export async function createPost(data: Pick<NewPost, "content" | "imageUrl">) {
-  const session = await auth()
+  const session = await auth.api.getSession({
+    headers: await headers()
+  });
   if (!session?.user?.id) {
     throw new Error("Not authenticated")
   }
@@ -28,7 +31,9 @@ export async function createPost(data: Pick<NewPost, "content" | "imageUrl">) {
 
 // Get posts for the feed (organized by dislikes and following)
 export async function getFeedPosts() {
-  const session = await auth()
+  const session = await auth.api.getSession({
+    headers: await headers()
+  });
   if (!session?.user?.id) {
     throw new Error("Not authenticated")
   }
@@ -104,7 +109,9 @@ export async function getFeedPosts() {
 
 // Get posts for a specific user
 export async function getUserPosts(userId: string) {
-  const session = await auth()
+  const session = await auth.api.getSession({
+    headers: await headers()
+  });
   
   const userPosts = await db.query.posts.findMany({
     where: eq(posts.userId, userId),
@@ -167,7 +174,9 @@ export async function getUserPosts(userId: string) {
 
 // Get a single post with comments
 export async function getPost(postId: string) {
-  const session = await auth()
+  const session = await auth.api.getSession({
+    headers: await headers()
+  });
   
   const post = await db.query.posts.findFirst({
     where: eq(posts.id, postId),
@@ -273,7 +282,9 @@ export async function getPost(postId: string) {
 
 // React to a post (like, dislike, super dislike)
 export async function reactToPost(postId: string, type: string) {
-  const session = await auth()
+  const session = await auth.api.getSession({
+    headers: await headers()
+  });
   if (!session?.user?.id) {
     throw new Error("Not authenticated")
   }

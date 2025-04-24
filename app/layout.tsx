@@ -1,8 +1,9 @@
 import type { Metadata } from "next"
 import { Inter } from "next/font/google"
-import "./globals.css"
+import "@/styles/globals.css"
+import { headers } from "next/headers"
 
-import { auth } from "@/auth"
+import { auth } from "@/lib/auth"
 import { Header } from "@/components/header"
 import { Providers } from "./providers"
 import { Toaster } from "sonner"
@@ -19,7 +20,9 @@ export default async function RootLayout({
 }: Readonly<{
     children: React.ReactNode
 }>) {
-    const session = await auth()
+    const session = await auth.api.getSession({
+        headers: await headers()
+    });
 
     return (
         <html lang="en" suppressHydrationWarning>

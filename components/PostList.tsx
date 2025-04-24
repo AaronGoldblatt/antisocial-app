@@ -1,6 +1,5 @@
 "use client"
 
-import { useState } from "react"
 import { User } from "next-auth"
 import { Post } from "@/database/schema/social"
 import { PostItem } from "./PostItem"
@@ -22,7 +21,9 @@ interface PostListProps {
 }
 
 export function PostList({ initialPosts, onReaction }: PostListProps) {
-  const [posts, setPosts] = useState(initialPosts)
+  // We keep the posts state even if not using setPosts yet
+  // for potential future use (like real-time updates)
+  const posts = initialPosts
 
   return (
     <div className="flex flex-col gap-4">

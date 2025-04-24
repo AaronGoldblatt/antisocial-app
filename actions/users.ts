@@ -8,10 +8,13 @@ import { db } from "@/database/db"
 import { follows, posts, comments, reactions } from "@/database/schema/social"
 import { users } from "@/database/schema/auth"
 import { and, count, eq, sql } from "drizzle-orm"
+import { headers } from "next/headers"
 
 // Get user profile info
 export async function getUserProfile(userId: string) {
-  const session = await auth()
+  const session = await auth.api.getSession({
+    headers: await headers()
+  });
   
   // Get user
   const user = await db.query.users.findFirst({
@@ -62,7 +65,9 @@ export async function getUserProfile(userId: string) {
 
 // Follow a user
 export async function followUser(userId: string) {
-  const session = await auth()
+  const session = await auth.api.getSession({
+    headers: await headers()
+  });
   if (!session?.user?.id) {
     throw new Error("Not authenticated")
   }
@@ -102,7 +107,9 @@ export async function followUser(userId: string) {
 
 // Unfollow a user
 export async function unfollowUser(userId: string) {
-  const session = await auth()
+  const session = await auth.api.getSession({
+    headers: await headers()
+  });
   if (!session?.user?.id) {
     throw new Error("Not authenticated")
   }

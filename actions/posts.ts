@@ -54,11 +54,11 @@ export async function getFeedPosts() {
     where: inArray(posts.userId, relevantUserIds),
     orderBy: [
       // Sort by engagement (number of dislikes and super dislikes, then creation date)
-      desc(sql`
-        (SELECT COUNT(*) FROM ${reactions} 
-         WHERE ${reactions.postId} = ${posts.id} 
-         AND (${reactions.type} = ${ReactionType.DISLIKE} OR ${reactions.type} = ${ReactionType.SUPER_DISLIKE}))
-      `),
+      desc(sql.raw(`
+        (SELECT COUNT(*) FROM "reactions" 
+         WHERE "reactions"."post_id" = "posts"."id" 
+         AND ("reactions"."type" = 'dislike' OR "reactions"."type" = 'super_dislike'))
+      `)),
       desc(posts.createdAt)
     ],
     with: {
@@ -117,11 +117,11 @@ export async function getUserPosts(userId: string) {
     where: eq(posts.userId, userId),
     orderBy: [
       // Sort by engagement (number of dislikes and super dislikes, then creation date)
-      desc(sql`
-        (SELECT COUNT(*) FROM ${reactions} 
-         WHERE ${reactions.postId} = ${posts.id} 
-         AND (${reactions.type} = ${ReactionType.DISLIKE} OR ${reactions.type} = ${ReactionType.SUPER_DISLIKE}))
-      `),
+      desc(sql.raw(`
+        (SELECT COUNT(*) FROM "reactions" 
+         WHERE "reactions"."post_id" = "posts"."id" 
+         AND ("reactions"."type" = 'dislike' OR "reactions"."type" = 'super_dislike'))
+      `)),
       desc(posts.createdAt)
     ],
     with: {

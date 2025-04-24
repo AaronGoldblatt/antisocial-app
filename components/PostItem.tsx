@@ -3,7 +3,6 @@
 import { useState } from "react"
 import Image from "next/image"
 import Link from "next/link"
-import { User } from "lucia"
 import { formatDistanceToNow } from "date-fns"
 
 import { Post } from "@/database/schema/social"
@@ -14,7 +13,11 @@ import { ThumbsUp, ThumbsDown, AlertTriangle } from "lucide-react"
 
 interface PostItemProps {
   post: Post & {
-    user: User
+    user: {
+      id: string;
+      name?: string | null;
+      image?: string | null;
+    }
     _count?: {
       comments: number
       reactions: {

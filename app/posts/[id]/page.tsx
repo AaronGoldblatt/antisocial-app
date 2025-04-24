@@ -1,0 +1,62 @@
+import { notFound, redirect } from "next/navigation"
+import { auth } from "@/auth"
+import { PostItem } from "@/components/PostItem"
+import { CreateComment } from "@/components/CreateComment"
+import { CommentItem } from "@/components/CommentItem"
+import { getPost } from "@/actions/posts"
+import { reactToPost } from "@/actions/posts"
+import { reactToComment } from "@/actions/comments"
+
+interface PostPageProps {
+  params: {
+    id: string
+  }
+}
+
+export default async function PostPage({ params }: PostPageProps) {
+  const session = await auth()
+  
+  // Redirect to login if not authenticated
+  if (!session?.user) {
+    redirect("/auth/sign-in")
+  }
+
+  try {
+    const post = await getPost(params.id)
+
+    return (
+      <main className="container max-w-2xl py-6">
+        <div className="flex flex-col gap-6">
+          <PostItem post={post} onReaction={reactToPost} />
+          
+          <div className="border-t pt-6">
+            <h2 className="mb-4 text-xl font-bold">Comments</h2>
+            
+            <div className="mb-6">
+              <CreateComment postId={post.id} />
+            </div>
+            
+            <div className="flex flex-col gap-4">
+              {post.comments && post.comments.length > 0 ? (
+                post.comments.map((comment) => (
+                  <CommentItem 
+                    key={comment.id} 
+                    comment={comment} 
+                    onReaction={reactToComment} 
+                  />
+                ))
+              ) : (
+                <div className="rounded-lg border border-dashed p-6 text-center">
+                  <p className="text-muted-foreground">No comments yet. Be the first to comment!</p>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      </main>
+    )
+  } catch (error) {
+    console.error("Error fetching post:", error)
+    notFound()
+  }
+} 

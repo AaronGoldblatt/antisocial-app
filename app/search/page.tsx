@@ -1,0 +1,27 @@
+import { redirect } from "next/navigation"
+import { auth } from "@/auth"
+import { search } from "@/actions/search"
+
+export default async function SearchPage() {
+  const session = await auth()
+  
+  // Redirect to login if not authenticated
+  if (!session?.user) {
+    redirect("/auth/sign-in")
+  }
+
+  return (
+    <main className="container max-w-3xl py-6">
+      <div className="flex flex-col gap-6">
+        <h1 className="text-3xl font-bold">Search</h1>
+        
+        <div className="flex flex-col items-center justify-center rounded-lg border border-dashed p-12 text-center">
+          <h3 className="text-2xl font-medium mb-2">Search Coming Soon</h3>
+          <p className="text-muted-foreground">
+            This feature is not implemented yet. Check back later!
+          </p>
+        </div>
+      </div>
+    </main>
+  )
+} 

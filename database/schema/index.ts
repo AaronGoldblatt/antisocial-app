@@ -1,2 +1,2 @@
-export * from "./todos";
+export * from "./social";
 export * from "./auth";

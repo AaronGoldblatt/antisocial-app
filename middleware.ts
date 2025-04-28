@@ -26,7 +26,9 @@ export async function middleware(request: NextRequest) {
     // Handle other auth redirects as needed
     if (request.nextUrl.pathname.startsWith('/auth') && 
         request.nextUrl.pathname !== '/auth/sign-in' && 
-        request.nextUrl.pathname !== '/auth/sign-up') {
+        request.nextUrl.pathname !== '/auth/sign-up' &&
+        request.nextUrl.pathname !== '/auth/settings' &&
+        !request.nextUrl.pathname.startsWith('/auth/callback')) {
         
         const redirectUrl = new URL('/auth/sign-in', request.url)
         return NextResponse.redirect(redirectUrl)

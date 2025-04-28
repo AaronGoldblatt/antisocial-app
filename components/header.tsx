@@ -5,8 +5,9 @@ import { usePathname } from "next/navigation"
 import { useEffect } from "react"
 
 import { cn } from "@/lib/utils"
-import { Home, Users, Bell, Search } from "lucide-react"
+import { Home, Users, Search } from "lucide-react"
 import { CustomUserButton } from "./CustomUserButton"
+import { NotificationBadge } from "./NotificationBadge"
 
 interface HeaderProps {
   user?: {
@@ -63,16 +64,9 @@ export function Header({ user }: HeaderProps) {
                   <Search className="h-5 w-5" />
                   <span className="sr-only">Search</span>
                 </Link>
-                <Link
-                  href="/notifications"
-                  className={cn(
-                    "flex h-10 w-10 items-center justify-center rounded-md transition-colors hover:bg-muted sm:h-10 sm:w-10",
-                    pathname === "/notifications" && "bg-muted"
-                  )}
-                >
-                  <Bell className="h-5 w-5" />
-                  <span className="sr-only">Notifications</span>
-                </Link>
+                
+                <NotificationBadge pathname={pathname || ""} />
+                
                 <Link
                   href={`/users/${user?.id}`}
                   className={cn(

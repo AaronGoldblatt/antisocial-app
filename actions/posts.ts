@@ -346,4 +346,115 @@ export async function hasUserPosted(userId: string) {
     .where(eq(posts.userId, userId))
   
   return postCount[0].count > 0
+}
+
+// Get posts from users the current user is following (ordered by newest first)
+export async function getFollowingPosts() {
+  const session = await auth.api.getSession({
+    headers: await headers()
+  });
+  
+  if (!session?.user?.id) {
+    throw new Error("Not authenticated")
+  }
+
+  // First, get the IDs of users that the current user is following
+  const followedUsers = await db.select({
+    followingId: follows.followingId
+  })
+  .from(follows)
+  .where(eq(follows.followerId, session.user.id));
+  
+  // Extract the user IDs from the result
+  const followedUserIds = followedUsers.map(user => user.followingId);
+  
+  // If not following anyone, return empty array
+  if (followedUserIds.length === 0) {
+    return [];
+  }
+
+  // Get posts from followed users
+  const followingPosts = await db.query.posts.findMany({
+    where: inArray(posts.userId, followedUserIds),
+    orderBy: [desc(posts.createdAt)], // Order by newest first
+    with: {
+      user: true
+    }
+  });
+
+  // Get reaction counts and user's reactions for each post
+  const postsWithReactions = await Promise.all(
+    followingPosts.map(async (post) => {
+      const [likesCount, dislikesCount, superDislikesCount] = await Promise.all([
+        db.select({ count: count() }).from(reactions)
+          .where(and(eq(reactions.postId, post.id), eq(reactions.type, ReactionType.LIKE))),
+        db.select({ count: count() }).from(reactions)
+          .where(and(eq(reactions.postId, post.id), eq(reactions.type, ReactionType.DISLIKE))),
+        db.select({ count: count() }).from(reactions)
+          .where(and(eq(reactions.postId, post.id), eq(reactions.type, ReactionType.SUPER_DISLIKE)))
+      ]);
+
+      const commentCount = await db.select({ count: count() })
+        .from(comments)
+        .where(eq(comments.postId, post.id));
+
+      const userReaction = await db.select().from(reactions)
+        .where(and(
+          eq(reactions.postId, post.id),
+          eq(reactions.userId, session.user.id)
+        ))
+        .limit(1);
+
+      return {
+        ...post,
+        _count: {
+          comments: commentCount[0].count,
+          reactions: {
+            like: likesCount[0].count,
+            dislike: dislikesCount[0].count,
+            superDislike: superDislikesCount[0].count
+          }
+        },
+        userReaction: userReaction[0]?.type || null
+      };
+    })
+  );
+
+  return postsWithReactions;
+}
+
+// Count new posts from followed users since a given date
+export async function countNewFollowingPosts(since: Date) {
+  const session = await auth.api.getSession({
+    headers: await headers()
+  });
+  
+  if (!session?.user?.id) {
+    throw new Error("Not authenticated")
+  }
+
+  // Get the IDs of users that the current user is following
+  const followedUsers = await db.select({
+    followingId: follows.followingId
+  })
+  .from(follows)
+  .where(eq(follows.followerId, session.user.id));
+  
+  // Extract the user IDs from the result
+  const followedUserIds = followedUsers.map(user => user.followingId);
+  
+  // If not following anyone, return zero
+  if (followedUserIds.length === 0) {
+    return 0;
+  }
+
+  // Count posts from followed users newer than the given date
+  const newPostsCount = await db.select({ count: count() })
+    .from(posts)
+    .where(and(
+      inArray(posts.userId, followedUserIds),
+      gt(posts.createdAt, since)
+    ));
+
+  return newPostsCount[0].count;
 } 

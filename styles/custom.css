@@ -636,3 +636,30 @@ button:not(:disabled),
     --color-warning: var(--warning);
     --color-warning-foreground: var(--warning-foreground);
 }
+
+/* Notification badge styling */
+.relative:has(.h-5.w-5 + span) {
+  position: relative;
+}
+
+.relative:has(.h-5.w-5) span[class*="absolute"] {
+  background-color: #FF3300 !important;
+  color: #000000 !important;
+  border: 1px solid #FF6600 !important;
+  box-shadow: 0 0 8px rgba(255, 51, 0, 0.6) !important;
+  animation: pulse 2s infinite !important;
+  font-family: 'Creepster', cursive !important;
+  transform: scale(1.1) !important;
+}
+
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(255, 51, 0, 0.7);
+  }
+  70% {
+    box-shadow: 0 0 0 6px rgba(255, 51, 0, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(255, 51, 0, 0);
+  }
+}

@@ -6,7 +6,7 @@ import { redirect } from "next/navigation"
 import { auth } from "@/auth"
 import { db } from "@/database/db"
 import { NewPost, posts, reactions, ReactionType, comments, follows } from "@/database/schema/social"
-import { and, count, desc, eq, exists, gt, inArray, isNull, or, sql } from "drizzle-orm"
+import { and, count, desc, eq, exists, gt, inArray, isNull, not, or, sql } from "drizzle-orm"
 import { users } from "@/database/schema/auth"
 import { headers } from "next/headers"
 
@@ -29,7 +29,7 @@ export async function createPost(data: Pick<NewPost, "content" | "imageUrl">) {
   return newPost[0]
 }
 
-// Get posts for the feed (organized by dislikes and following)
+// Get posts for the feed (showing all posts except the user's own, sorted by dislikes)
 export async function getFeedPosts() {
   const session = await auth.api.getSession({
     headers: await headers()
@@ -38,26 +38,18 @@ export async function getFeedPosts() {
     throw new Error("Not authenticated")
   }
 
-  // Get IDs of users being followed by the current user
-  const followingUsers = await db
-    .select({ userId: follows.followingId })
-    .from(follows)
-    .where(eq(follows.followerId, session.user.id))
-
-  const followingUserIds = followingUsers.map((follow) => follow.userId)
-  
-  // Include current user's ID to see own posts
-  const relevantUserIds = [session.user.id, ...followingUserIds]
-
-  // Query posts with user info, reaction counts, comment counts
+  // Query posts with user info, excluding current user's posts
   const feedPosts = await db.query.posts.findMany({
-    where: inArray(posts.userId, relevantUserIds),
+    where: not(eq(posts.userId, session.user.id)),
     orderBy: [
-      // Sort by engagement (number of dislikes and super dislikes, then creation date)
+      // Sort by (dislike + 2*super_dislike) first, then by creation date (newest first)
       desc(sql.raw(`
         (SELECT COUNT(*) FROM "reactions" 
          WHERE "reactions"."post_id" = "posts"."id" 
-         AND ("reactions"."type" = 'dislike' OR "reactions"."type" = 'super_dislike'))
+         AND "reactions"."type" = 'dislike')
+        + 2 * (SELECT COUNT(*) FROM "reactions" 
+         WHERE "reactions"."post_id" = "posts"."id" 
+         AND "reactions"."type" = 'super_dislike')
       `)),
       desc(posts.createdAt)
     ],
@@ -116,11 +108,14 @@ export async function getUserPosts(userId: string) {
   const userPosts = await db.query.posts.findMany({
     where: eq(posts.userId, userId),
     orderBy: [
-      // Sort by engagement (number of dislikes and super dislikes, then creation date)
+      // Sort by (dislike + 2*super_dislike) first, then by creation date
       desc(sql.raw(`
         (SELECT COUNT(*) FROM "reactions" 
          WHERE "reactions"."post_id" = "posts"."id" 
-         AND ("reactions"."type" = 'dislike' OR "reactions"."type" = 'super_dislike'))
+         AND "reactions"."type" = 'dislike')
+        + 2 * (SELECT COUNT(*) FROM "reactions" 
+         WHERE "reactions"."post_id" = "posts"."id" 
+         AND "reactions"."type" = 'super_dislike')
       `)),
       desc(posts.createdAt)
     ],
@@ -212,6 +207,7 @@ export async function getPost(postId: string) {
         .limit(1)
     : []
 
+  // Get comments sorted by (dislike + 2*super_dislike) first, then by newest first when scores are equal
   const postComments = await db.select({
     id: comments.id,
     content: comments.content,
@@ -228,7 +224,17 @@ export async function getPost(postId: string) {
   }).from(comments)
     .innerJoin(users, eq(comments.userId, users.id))
     .where(eq(comments.postId, post.id))
-    .orderBy(desc(comments.createdAt))
+    .orderBy(
+      desc(sql.raw(`
+        (SELECT COUNT(*) FROM "reactions" 
+         WHERE "reactions"."comment_id" = "comments"."id" 
+         AND "reactions"."type" = 'dislike')
+        + 2 * (SELECT COUNT(*) FROM "reactions" 
+         WHERE "reactions"."comment_id" = "comments"."id" 
+         AND "reactions"."type" = 'super_dislike')
+      `)),
+      desc(comments.createdAt)
+    )
 
   // Get reaction counts for each comment
   const commentsWithReactions = await Promise.all(

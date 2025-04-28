@@ -2,7 +2,7 @@ import { notFound, redirect } from "next/navigation"
 import { auth } from "@/lib/auth"
 import { PostItem } from "@/components/PostItem"
 import { CreateComment } from "@/components/CreateComment"
-import { CommentItem } from "@/components/CommentItem"
+import { CommentList } from "@/components/CommentList"
 import { getPost } from "@/actions/posts"
 import { reactToPost } from "@/actions/posts"
 import { reactToComment } from "@/actions/comments"
@@ -42,13 +42,7 @@ export default async function PostPage({ params }: PostPageProps) {
               
               <div className="flex flex-col gap-4">
                 {post.comments && post.comments.length > 0 ? (
-                  post.comments.map((comment: any) => (
-                    <CommentItem 
-                      key={comment.id} 
-                      comment={comment} 
-                      onReaction={reactToComment} 
-                    />
-                  ))
+                  <CommentList initialComments={post.comments} onReaction={reactToComment} />
                 ) : (
                   <div className="rounded-lg border border-dashed p-6 text-center">
                     <p className="text-muted-foreground">No comments yet. Be the first to comment!</p>

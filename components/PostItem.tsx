@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useRef, useEffect } from "react"
 import Image from "next/image"
 import Link from "next/link"
 import { formatDistanceToNow } from "date-fns"
@@ -36,14 +36,37 @@ export function PostItem({ post, onReaction }: PostItemProps) {
   const [formattedTime] = useState(() => 
     formatDistanceToNow(new Date(post.createdAt), { addSuffix: true })
   )
+  
+  // Refs for the buttons to manage animations
+  const dislikeButtonRef = useRef<HTMLButtonElement>(null);
+  const superDislikeButtonRef = useRef<HTMLButtonElement>(null);
+  const likeButtonRef = useRef<HTMLButtonElement>(null);
+  
+  // Track which button was just clicked
+  const [clickedButton, setClickedButton] = useState<string | null>(null);
+  
+  // Remove the data-just-clicked attribute after animation completes
+  useEffect(() => {
+    if (clickedButton) {
+      const timer = setTimeout(() => {
+        setClickedButton(null);
+      }, 1500); // Slightly longer than animation duration
+      
+      return () => clearTimeout(timer);
+    }
+  }, [clickedButton]);
 
   const handleReaction = async (type: string) => {
-    if (isLoading) return
-    setIsLoading(true)
+    if (isLoading) return;
+    setIsLoading(true);
+    
+    // Set which button was clicked for animation
+    setClickedButton(type);
+    
     try {
-      await onReaction(post.id, type)
+      await onReaction(post.id, type);
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
   }
 
@@ -90,6 +113,7 @@ export function PostItem({ post, onReaction }: PostItemProps) {
 
       <div className="flex gap-2 pt-2">
         <Button
+          ref={dislikeButtonRef}
           variant="outline"
           size="sm"
           className={cn(
@@ -98,11 +122,13 @@ export function PostItem({ post, onReaction }: PostItemProps) {
           )}
           onClick={() => handleReaction(ReactionType.DISLIKE)}
           disabled={isLoading}
+          data-just-clicked={clickedButton === ReactionType.DISLIKE ? "true" : undefined}
         >
           <ThumbsDown size={16} />
           <span>{post._count?.reactions.dislike || 0}</span>
         </Button>
         <Button
+          ref={superDislikeButtonRef}
           variant="outline"
           size="sm"
           className={cn(
@@ -111,11 +137,13 @@ export function PostItem({ post, onReaction }: PostItemProps) {
           )}
           onClick={() => handleReaction(ReactionType.SUPER_DISLIKE)}
           disabled={isLoading}
+          data-just-clicked={clickedButton === ReactionType.SUPER_DISLIKE ? "true" : undefined}
         >
           <AlertTriangle size={16} />
           <span>{post._count?.reactions.superDislike || 0}</span>
         </Button>
         <Button
+          ref={likeButtonRef}
           variant="outline"
           size="sm"
           className={cn(
@@ -125,6 +153,7 @@ export function PostItem({ post, onReaction }: PostItemProps) {
           onClick={() => handleReaction(ReactionType.LIKE)}
           disabled={isLoading}
           style={{ transform: "scale(0.85)" }}
+          data-just-clicked={clickedButton === ReactionType.LIKE ? "true" : undefined}
         >
           <ThumbsUp size={14} />
           <span>{post._count?.reactions.like || 0}</span>

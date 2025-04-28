@@ -39,21 +39,46 @@ export function WelcomeCreatePost() {
       setIsLoading(false)
     }
   }
+  
+  const handleSkip = () => {
+    // Set cookie to indicate user has posted this session (even though they haven't)
+    document.cookie = "has_posted_this_session=true; path=/;"
+    
+    toast.info("Skipping the rant... Just this once!", {
+      description: "You can browse freely, but we expect a rant next time!"
+    })
+    
+    // Redirect to home page
+    router.push("/")
+  }
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col gap-3 rounded-lg border p-4 shadow-sm">
-      <Textarea 
-        placeholder="What's on your mind? Rant away!" 
-        value={content}
-        onChange={(e) => setContent(e.target.value)}
-        rows={3}
-        className="resize-none"
-      />
-      <div className="flex justify-end">
-        <Button type="submit" disabled={isLoading || !content.trim()}>
-          {isLoading ? "Posting..." : "Rant to Continue"}
+    <div className="flex flex-col gap-4">
+      <form onSubmit={handleSubmit} className="flex flex-col gap-3 rounded-lg border p-4 shadow-sm">
+        <Textarea 
+          placeholder="What's on your mind? Rant away!" 
+          value={content}
+          onChange={(e) => setContent(e.target.value)}
+          rows={3}
+          className="resize-none"
+        />
+        <div className="flex justify-end">
+          <Button type="submit" disabled={isLoading || !content.trim()}>
+            {isLoading ? "Posting..." : "Rant to Continue"}
+          </Button>
+        </div>
+      </form>
+      
+      <div className="flex justify-center mt-2">
+        <Button 
+          variant="ghost" 
+          size="sm" 
+          onClick={handleSkip}
+          className="text-muted-foreground hover:text-foreground text-sm"
+        >
+          I'm a shy loser, just let me in pwease 🥺
         </Button>
       </div>
-    </form>
+    </div>
   )
 } 

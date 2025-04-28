@@ -5,8 +5,8 @@ import { usePathname } from "next/navigation"
 import { useEffect } from "react"
 
 import { cn } from "@/lib/utils"
-import { UserButton } from "@daveyplate/better-auth-ui"
 import { Home, Users, Bell, Search } from "lucide-react"
+import { CustomUserButton } from "./CustomUserButton"
 
 interface HeaderProps {
   user?: {
@@ -86,7 +86,7 @@ export function Header({ user }: HeaderProps) {
           )}
         </div>
         
-        <UserButton />
+        <CustomUserButton />
       </div>
     </header>
   )

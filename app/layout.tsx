@@ -16,11 +16,16 @@ export const metadata: Metadata = {
     description: "A social media platform focused on dislikes",
 }
 
+// Ensure this layout is not cached and re-renders on every request
+export const dynamic = "force-dynamic"
+export const revalidate = 0
+
 export default async function RootLayout({
     children
 }: Readonly<{
     children: React.ReactNode
 }>) {
+    // Get fresh session data on every request
     const session = await auth.api.getSession({
         headers: await headers()
     });

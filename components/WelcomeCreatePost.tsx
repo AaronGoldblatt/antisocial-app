@@ -30,8 +30,9 @@ export function WelcomeCreatePost() {
       setContent("")
       toast.success("Post created! You may now use the site.")
       
-      // Redirect to home page
-      router.push("/")
+      // Force a complete page refresh rather than client navigation
+      // This ensures the layout re-renders with the new session state
+      window.location.href = "/"
     } catch (error) {
       toast.error("Failed to create post")
       console.error(error)
@@ -48,8 +49,9 @@ export function WelcomeCreatePost() {
       description: "You can browse freely, but we expect a rant next time!"
     })
     
-    // Redirect to home page
-    router.push("/")
+    // Force a complete page refresh rather than client navigation
+    // This ensures the layout re-renders with the new session state
+    window.location.href = "/"
   }
 
   return (

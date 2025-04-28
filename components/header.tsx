@@ -26,9 +26,10 @@ export function Header({ user }: HeaderProps) {
     console.log("Header user:", user)
   }, [user])
 
-  // Don't show navigation on auth pages
+  // Don't show navigation on auth pages or welcome page
   const isAuthPage = pathname?.startsWith('/auth')
-  const showNav = !isAuthPage && !!user
+  const isWelcomePage = pathname === '/welcome'
+  const showNav = !isAuthPage && !isWelcomePage && !!user
   
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/90 backdrop-blur-sm">

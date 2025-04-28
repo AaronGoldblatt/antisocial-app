@@ -419,19 +419,34 @@ button:has(.AlertTriangle) svg {
     z-index: 2 !important;
 }
 
-/* Style for filled/selected reaction buttons */
+/* LIKE BUTTON: boring transition, no animation */
 button.bg-green-100 svg,
-button.bg-orange-100 svg,
-button.bg-red-100 svg,
-button.dark\:bg-green-900 svg,
-button.dark\:bg-orange-900 svg,
-button.dark\:bg-red-900 svg {
+button.dark\:bg-green-900 svg {
     fill: #FF6600 !important;
     stroke: #FF6600 !important;
+    filter: drop-shadow(0 0 5px rgba(0, 255, 0, 0.3)) !important;
+    transition: background 0.2s, filter 0.2s, fill 0.2s, stroke 0.2s !important;
+    animation: none !important;
+}
+
+/* DISLIKE BUTTON: keep wiggle-in-place animation */
+button.bg-orange-100 svg,
+button.dark\:bg-orange-900 svg {
+    fill: #FF6600 !important;
+    stroke: #FF6600 !important;
+    filter: drop-shadow(0 0 5px rgba(255, 165, 0, 0.3)) !important;
     animation: wiggle-in-place 1s cubic-bezier(0.36, 0.07, 0.19, 0.97) forwards !important;
 }
 
-/* Improved animation that wiggles in place with smooth scaling */
+/* SUPER DISLIKE BUTTON: dramatic animation and flourish */
+button.bg-red-100 svg,
+button.dark\:bg-red-900 svg {
+    fill: #FF6600 !important;
+    stroke: #FF6600 !important;
+    filter: drop-shadow(0 0 12px #FF3300) drop-shadow(0 0 24px #FF3300) !important;
+    animation: super-dislike-flourish 1.2s cubic-bezier(0.36, 0.07, 0.19, 0.97) forwards !important;
+}
+
 @keyframes wiggle-in-place {
     0% {
         transform: scale(0.8);
@@ -464,20 +479,46 @@ button.dark\:bg-red-900 svg {
     }
 }
 
-/* Add subtle glow effect on active buttons */
-button.bg-green-100 svg,
-button.dark\:bg-green-900 svg {
-    filter: drop-shadow(0 0 5px rgba(0, 255, 0, 0.3)) !important;
-}
-
-button.bg-orange-100 svg,
-button.dark\:bg-orange-900 svg {
-    filter: drop-shadow(0 0 5px rgba(255, 165, 0, 0.3)) !important;
-}
-
-button.bg-red-100 svg,
-button.dark\:bg-red-900 svg {
-    filter: drop-shadow(0 0 5px rgba(255, 0, 0, 0.3)) !important;
+/* SUPER DISLIKE: dramatic shake, scale, and burst flourish */
+@keyframes super-dislike-flourish {
+    0% {
+        transform: scale(0.8) rotate(0deg);
+        filter: drop-shadow(0 0 0 #FF3300);
+        opacity: 0.8;
+    }
+    10% {
+        transform: scale(1.5) rotate(-18deg);
+        filter: drop-shadow(0 0 8px #FF3300);
+        opacity: 1;
+    }
+    25% {
+        transform: scale(1.7) rotate(18deg);
+        filter: drop-shadow(0 0 16px #FF3300);
+    }
+    40% {
+        transform: scale(1.8) rotate(-12deg);
+        filter: drop-shadow(0 0 24px #FF3300);
+    }
+    55% {
+        transform: scale(2.0) rotate(12deg);
+        filter: drop-shadow(0 0 32px #FF3300);
+    }
+    70% {
+        transform: scale(2.2) rotate(0deg);
+        filter: drop-shadow(0 0 40px #FF3300);
+    }
+    80% {
+        transform: scale(1.5) rotate(0deg);
+        filter: drop-shadow(0 0 24px #FF3300);
+    }
+    90% {
+        transform: scale(1.1) rotate(0deg);
+        filter: drop-shadow(0 0 8px #FF3300);
+    }
+    100% {
+        transform: scale(1) rotate(0deg);
+        filter: drop-shadow(0 0 0 #FF3300);
+    }
 }
 
 /* Reaction button backgrounds when selected */

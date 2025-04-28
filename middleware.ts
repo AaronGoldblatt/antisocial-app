@@ -1,15 +1,9 @@
 import { type NextRequest, NextResponse } from "next/server"
 
 export async function middleware(request: NextRequest) {
-    // Handle sign-out page redirection and cookie clearing
+    // Handle sign-out redirection by allowing the request through
     if (request.nextUrl.pathname === '/auth/sign-out') {
-        // Create a response for redirecting to sign-in
-        const response = NextResponse.redirect(new URL('/auth/sign-in', request.url))
-        
-        // Remove the session cookie
-        response.cookies.delete('has_posted_this_session')
-        
-        return response
+        return NextResponse.next()
     }
 
     // Also clear cookie on fresh sign-in

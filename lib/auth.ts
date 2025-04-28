@@ -21,7 +21,17 @@ export const auth = betterAuth({
         }
     },
     emailAndPassword: {
-        enabled: true
+        enabled: true,
+        callbackURL: "/welcome" // Redirect to welcome page after sign in/sign up
+    },
+    // Configure default callbacks for all auth methods
+    callbacks: {
+        session: {
+            onSuccess: {
+                signIn: "/welcome",
+                signUp: "/welcome"
+            }
+        }
     },
     plugins: [
         nextCookies() // keep this last in `plugins` array

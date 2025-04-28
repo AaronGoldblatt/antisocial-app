@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation"
-import { auth } from "@/auth"
+import { auth } from "@/lib/auth"
 import { PostList } from "@/components/PostList"
 import { CreatePost } from "@/components/CreatePost"
 import { getFeedPosts } from "@/actions/posts"
@@ -17,6 +17,7 @@ export default async function Home() {
     redirect("/auth/sign-in")
   }
 
+  // Get feed posts
   const posts = await getFeedPosts()
 
   return (

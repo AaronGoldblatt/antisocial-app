@@ -331,4 +331,13 @@ export async function reactToPost(postId: string, type: string) {
 
   revalidatePath(`/posts/${postId}`)
   revalidatePath("/")
+}
+
+// Check if a user has made any posts
+export async function hasUserPosted(userId: string) {
+  const postCount = await db.select({ count: count() })
+    .from(posts)
+    .where(eq(posts.userId, userId))
+  
+  return postCount[0].count > 0
 } 

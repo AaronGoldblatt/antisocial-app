@@ -93,19 +93,6 @@ export function CommentItem({ comment, onReaction }: CommentItemProps) {
           size="sm"
           className={cn(
             "flex h-7 gap-1 px-2 text-xs",
-            comment.userReaction === ReactionType.LIKE && "bg-green-100 dark:bg-green-900"
-          )}
-          onClick={() => handleReaction(ReactionType.LIKE)}
-          disabled={isLoading}
-        >
-          <ThumbsUp size={14} />
-          <span>{comment._count?.reactions.like || 0}</span>
-        </Button>
-        <Button
-          variant="ghost"
-          size="sm"
-          className={cn(
-            "flex h-7 gap-1 px-2 text-xs",
             comment.userReaction === ReactionType.DISLIKE && "bg-orange-100 dark:bg-orange-900"
           )}
           onClick={() => handleReaction(ReactionType.DISLIKE)}
@@ -126,6 +113,20 @@ export function CommentItem({ comment, onReaction }: CommentItemProps) {
         >
           <AlertTriangle size={14} />
           <span>{comment._count?.reactions.superDislike || 0}</span>
+        </Button>
+        <Button
+          variant="ghost"
+          size="sm"
+          className={cn(
+            "flex h-6 gap-1 px-2 text-xs scale-90",
+            comment.userReaction === ReactionType.LIKE && "bg-green-100 dark:bg-green-900"
+          )}
+          onClick={() => handleReaction(ReactionType.LIKE)}
+          disabled={isLoading}
+          style={{ transform: "scale(0.85)" }}
+        >
+          <ThumbsUp size={12} />
+          <span>{comment._count?.reactions.like || 0}</span>
         </Button>
       </div>
     </div>

@@ -94,19 +94,6 @@ export function PostItem({ post, onReaction }: PostItemProps) {
           size="sm"
           className={cn(
             "flex gap-1",
-            post.userReaction === ReactionType.LIKE && "bg-green-100 dark:bg-green-900"
-          )}
-          onClick={() => handleReaction(ReactionType.LIKE)}
-          disabled={isLoading}
-        >
-          <ThumbsUp size={16} />
-          <span>{post._count?.reactions.like || 0}</span>
-        </Button>
-        <Button
-          variant="outline"
-          size="sm"
-          className={cn(
-            "flex gap-1",
             post.userReaction === ReactionType.DISLIKE && "bg-orange-100 dark:bg-orange-900"
           )}
           onClick={() => handleReaction(ReactionType.DISLIKE)}
@@ -127,6 +114,20 @@ export function PostItem({ post, onReaction }: PostItemProps) {
         >
           <AlertTriangle size={16} />
           <span>{post._count?.reactions.superDislike || 0}</span>
+        </Button>
+        <Button
+          variant="outline"
+          size="sm"
+          className={cn(
+            "flex gap-1 scale-90",
+            post.userReaction === ReactionType.LIKE && "bg-green-100 dark:bg-green-900"
+          )}
+          onClick={() => handleReaction(ReactionType.LIKE)}
+          disabled={isLoading}
+          style={{ transform: "scale(0.85)" }}
+        >
+          <ThumbsUp size={14} />
+          <span>{post._count?.reactions.like || 0}</span>
         </Button>
         <Link href={`/posts/${post.id}`} passHref>
           <Button variant="ghost" size="sm">

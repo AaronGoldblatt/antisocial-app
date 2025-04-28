@@ -9,7 +9,9 @@ import { Post } from "@/database/schema/social"
 import { ReactionType } from "@/database/schema/social"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
-import { ThumbsUp, ThumbsDown, AlertTriangle } from "lucide-react"
+import { DetailedThumbsUp } from "./DetailedThumbsUp"
+import { DetailedThumbsDown } from "./DetailedThumbsDown"
+import { MiddleFinger } from "./MiddleFinger"
 
 interface PostItemProps {
   post: Post & {
@@ -124,7 +126,7 @@ export function PostItem({ post, onReaction }: PostItemProps) {
           disabled={isLoading}
           data-just-clicked={clickedButton === ReactionType.DISLIKE ? "true" : undefined}
         >
-          <ThumbsDown size={16} />
+          <DetailedThumbsDown size={18} />
           <span>{post._count?.reactions.dislike || 0}</span>
         </Button>
         <Button
@@ -139,7 +141,7 @@ export function PostItem({ post, onReaction }: PostItemProps) {
           disabled={isLoading}
           data-just-clicked={clickedButton === ReactionType.SUPER_DISLIKE ? "true" : undefined}
         >
-          <AlertTriangle size={16} />
+          <MiddleFinger size={18} />
           <span>{post._count?.reactions.superDislike || 0}</span>
         </Button>
         <Button
@@ -155,7 +157,7 @@ export function PostItem({ post, onReaction }: PostItemProps) {
           style={{ transform: "scale(0.85)" }}
           data-just-clicked={clickedButton === ReactionType.LIKE ? "true" : undefined}
         >
-          <ThumbsUp size={14} />
+          <DetailedThumbsUp size={16} />
           <span>{post._count?.reactions.like || 0}</span>
         </Button>
         <Link href={`/posts/${post.id}`} passHref>

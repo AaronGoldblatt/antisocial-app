@@ -4,12 +4,14 @@ import { useState, useRef, useEffect } from "react"
 import Image from "next/image"
 import Link from "next/link"
 import { formatDistanceToNow } from "date-fns"
-import { ThumbsUp, ThumbsDown, AlertTriangle } from "lucide-react"
 
 import { Comment } from "@/database/schema/social"
 import { ReactionType } from "@/database/schema/social"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
+import { DetailedThumbsUp } from "./DetailedThumbsUp"
+import { DetailedThumbsDown } from "./DetailedThumbsDown"
+import { MiddleFinger } from "./MiddleFinger"
 
 interface CommentItemProps {
   comment: Comment & {
@@ -123,7 +125,7 @@ export function CommentItem({ comment, onReaction }: CommentItemProps) {
           disabled={isLoading}
           data-just-clicked={clickedButton === ReactionType.DISLIKE ? "true" : undefined}
         >
-          <ThumbsDown size={14} />
+          <DetailedThumbsDown size={16} />
           <span>{comment._count?.reactions.dislike || 0}</span>
         </Button>
         <Button
@@ -138,7 +140,7 @@ export function CommentItem({ comment, onReaction }: CommentItemProps) {
           disabled={isLoading}
           data-just-clicked={clickedButton === ReactionType.SUPER_DISLIKE ? "true" : undefined}
         >
-          <AlertTriangle size={14} />
+          <MiddleFinger size={16} />
           <span>{comment._count?.reactions.superDislike || 0}</span>
         </Button>
         <Button
@@ -154,7 +156,7 @@ export function CommentItem({ comment, onReaction }: CommentItemProps) {
           style={{ transform: "scale(0.85)" }}
           data-just-clicked={clickedButton === ReactionType.LIKE ? "true" : undefined}
         >
-          <ThumbsUp size={12} />
+          <DetailedThumbsUp size={14} />
           <span>{comment._count?.reactions.like || 0}</span>
         </Button>
       </div>

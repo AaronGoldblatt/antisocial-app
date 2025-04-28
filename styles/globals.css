@@ -125,3 +125,82 @@
         @apply bg-background text-foreground;
     }
 }
+
+/* Reaction button animations */
+@keyframes superDislikeAnimation {
+  0% {
+    transform: scale(1) rotate(0deg);
+  }
+  20% {
+    transform: scale(1.6) rotate(-15deg);
+  }
+  40% {
+    transform: scale(1.4) rotate(10deg);
+  }
+  60% {
+    transform: scale(1.3) rotate(-8deg);
+  }
+  80% {
+    transform: scale(1.1) rotate(5deg);
+  }
+  100% {
+    transform: scale(1) rotate(0deg);
+  }
+}
+
+@keyframes thumbsUpAnimation {
+  0% {
+    transform: scale(1);
+  }
+  25% {
+    transform: scale(1.5) translateY(-4px);
+  }
+  50% {
+    transform: scale(1.3) translateY(-2px);
+  }
+  75% {
+    transform: scale(1.1) translateY(-1px);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes thumbsDownAnimation {
+  0% {
+    transform: scale(1);
+  }
+  25% {
+    transform: scale(1.5) translateY(4px);
+  }
+  50% {
+    transform: scale(1.3) translateY(2px);
+  }
+  75% {
+    transform: scale(1.1) translateY(1px);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* Apply animations to specific reaction buttons */
+button[data-just-clicked="true"] .super-dislike-icon {
+  animation: superDislikeAnimation 0.8s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+  display: inline-block;
+}
+
+button[data-just-clicked="super_dislike"] .super-dislike-icon {
+  animation: superDislikeAnimation 0.8s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+  display: inline-block;
+}
+
+button[data-just-clicked="dislike"] div {
+  animation: thumbsDownAnimation 0.7s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+  display: inline-block;
+}
+
+button[data-just-clicked="like"] div {
+  animation: thumbsUpAnimation 0.7s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+  display: inline-block;
+}

@@ -7,6 +7,7 @@ import { auth } from "@/lib/auth"
 import { Header } from "@/components/header"
 import { Providers } from "./providers"
 import { Toaster } from "sonner"
+import { FontEnforcer } from "@/components/FontEnforcer"
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -25,9 +26,10 @@ export default async function RootLayout({
     });
 
     return (
-        <html lang="en" suppressHydrationWarning>
+        <html lang="en" className="dark" suppressHydrationWarning>
             <body className={inter.className}>
                 <Providers>
+                    <FontEnforcer />
                     <Header user={session?.user} />
                     <div className="flex min-h-[calc(100vh-4rem)] flex-col">
                         {children}

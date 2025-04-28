@@ -33,6 +33,9 @@ interface PostItemProps {
 
 export function PostItem({ post, onReaction }: PostItemProps) {
   const [isLoading, setIsLoading] = useState(false)
+  const [formattedTime] = useState(() => 
+    formatDistanceToNow(new Date(post.createdAt), { addSuffix: true })
+  )
 
   const handleReaction = async (type: string) => {
     if (isLoading) return
@@ -65,12 +68,13 @@ export function PostItem({ post, onReaction }: PostItemProps) {
             {post.user.name}
           </Link>
           <p className="text-xs text-muted-foreground">
-            {formatDistanceToNow(new Date(post.createdAt), { addSuffix: true })}
+            {formattedTime}
           </p>
         </div>
       </div>
 
-      <p className="whitespace-pre-wrap break-words">{post.content}</p>
+      {/* Post content in Comic Sans */}
+      <p className="post-content whitespace-pre-wrap break-words">{post.content}</p>
 
       {post.imageUrl && (
         <div className="overflow-hidden rounded-md">

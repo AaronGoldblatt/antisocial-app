@@ -1,26 +1,584 @@
+/* Import fonts from Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Creepster&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&display=swap');
+
 @plugin "tailwindcss-safe-area";
 
 @source "../node_modules/@daveyplate/better-auth-ui";
 
-@layer base {
-    button:not(:disabled),
-    [role="button"]:not(:disabled) {
-        cursor: pointer;
+:root {
+    /* Override theme colors with black background and orange text */
+    --background: #000000;
+    --foreground: #FF6600;
+    --card: #111111;
+    --card-foreground: #FF6600;
+    --popover: #111111;
+    --popover-foreground: #FF6600;
+    --primary: #FF6600;
+    --primary-foreground: #000000;
+    --secondary: #222222;
+    --secondary-foreground: #FF6600;
+    --muted: #222222;
+    --muted-foreground: #FF9900;
+    --accent: #FF9900;
+    --accent-foreground: #000000;
+    --destructive: #FF3300;
+    --destructive-foreground: #000000;
+    --border: #333333;
+    --input: #222222;
+    --ring: #FF6600;
+    
+    /* Set the angry font as default for the site */
+    --font-sans: 'Creepster', system-ui, sans-serif;
+    font-family: 'Creepster', cursive !important;
+}
+
+/* Dark mode is the same since we want black/orange everywhere */
+.dark {
+    --background: #000000;
+    --foreground: #FF6600;
+    --card: #111111;
+    --card-foreground: #FF6600;
+    --popover: #111111;
+    --popover-foreground: #FF6600;
+    --primary: #FF6600;
+    --primary-foreground: #000000;
+    --secondary: #222222;
+    --secondary-foreground: #FF6600;
+    --muted: #222222;
+    --muted-foreground: #FF9900;
+    --accent: #FF9900;
+    --accent-foreground: #000000;
+    --destructive: #FF3300;
+    --destructive-foreground: #000000;
+    --border: #333333;
+    --input: #222222;
+    --ring: #FF6600;
+}
+
+/*********************************************
+ * LAYOUT CENTERING
+ *********************************************/
+
+/* Center the main container and set max-width */
+.container {
+    margin-left: auto !important;
+    margin-right: auto !important;
+    max-width: 1400px !important;
+    width: 100% !important;
+    padding-left: 1.5rem !important;
+    padding-right: 1.5rem !important;
+}
+
+/* Center the header container and constrain width */
+header .container {
+    max-width: 1600px !important;
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+}
+
+/* Adjust main content area */
+main.container {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    width: 100% !important;
+}
+
+/* Responsive container widths for different screen sizes */
+@media (min-width: 1400px) {
+    .container {
+        max-width: 1600px !important;
     }
+    
+    header .container {
+        max-width: 1800px !important;
+    }
+}
+
+@media (min-width: 1024px) and (max-width: 1399px) {
+    .container {
+        max-width: 1300px !important;
+    }
+}
+
+@media (min-width: 768px) and (max-width: 1023px) {
+    .container {
+        max-width: 96% !important;
+    }
+}
+
+/* Full-width for mobile, centered with max-width for desktop */
+@media (max-width: 767px) {
+    .container {
+        max-width: 98% !important;
+        padding-left: 0.5rem !important;
+        padding-right: 0.5rem !important;
+    }
+}
+
+/*********************************************
+ * FONT STYLES
+ *********************************************/
+
+/* Set default angry font for all elements */
+* {
+    font-family: 'Creepster', cursive !important;
+}
+
+/* Apply angry font to all basic elements - be very explicit */
+html, body, #__next,
+h1, h2, h3, h4, h5, h6, 
+div, span, a, button, 
+input, select, textarea,
+header, nav, footer, 
+ul, ol, li, label, form {
+    font-family: 'Creepster', cursive !important;
+    letter-spacing: 1px;
+}
+
+/* Force font-family for NextJS components */
+div[id^="__next"], 
+div[class^="next-"], 
+div[class*=" next-"] {
+    font-family: 'Creepster', cursive !important;
+}
+
+/* Specifically style post and comment CONTENT with Comic Sans - nothing else */
+p.post-content,
+p.comment-content,
+.post-content,
+.comment-content {
+    font-family: 'Comic Neue', 'Comic Sans MS', cursive !important;
+    letter-spacing: normal;
+}
+
+/* Ensure all form elements have proper ids and names - this won't set those attributes directly,
+but we're handling that in FontEnforcer.tsx component */
+input, select, textarea {
+    font-family: 'Creepster', cursive !important;
+}
+
+/*********************************************
+ * COLOR STYLES
+ *********************************************/
+
+/* Apply orange text to everything */
+body * {
+    color: #FF6600 !important;
+}
+
+::placeholder {
+    color: #FF6600 !important;
+    opacity: 0.6 !important;
+}
+
+/* Force black background */
+body {
+    background-color: #000000 !important;
+}
+
+/* SVG icons should be orange */
+svg, svg *, path {
+    color: #FF6600 !important;
+    fill: #FF6600 !important;
+    stroke: #FF6600 !important;
+}
+
+/* Element backgrounds - MODIFIED to remove black boxes */
+div, textarea, input, select, 
+.bg-background, .bg-popover {
+    background-color: transparent !important;
+    border-color: #333333 !important;
+}
+
+/* Buttons should be transparent by default */
+button:not(.rounded-lg):not(.rounded-md):not(.border):not(.card) {
+    background-color: transparent !important;
+}
+
+/* Post container styling - cooler look */
+.rounded-lg, .rounded-md, .border, .card {
+    background-color: rgba(17, 17, 17, 0.7) !important;
+    border: 1px solid #333333 !important;
+    box-shadow: 0 0 15px rgba(255, 102, 0, 0.1) !important;
+    backdrop-filter: blur(3px) !important;
+    position: relative !important;
+    overflow: hidden !important;
+}
+
+/* Cool background effect behind each post container */
+.rounded-lg::before, .rounded-md::before, .border::before, .card::before {
+    content: "" !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    background: 
+        radial-gradient(circle at 20% 30%, rgba(255, 102, 0, 0.05) 0%, transparent 40%),
+        radial-gradient(circle at 80% 70%, rgba(255, 102, 0, 0.05) 0%, transparent 40%) !important;
+    z-index: -1 !important;
+}
+
+/* Apply cool effects to post sections - BUT NOT TO TEXTAREA IN NEW POST BOX */
+.post-content, 
+.comment-content {
+    background: linear-gradient(to bottom right, 
+                rgba(25, 25, 25, 0.7), 
+                rgba(10, 10, 10, 0.9)) !important;
+    border-radius: 8px !important;
+    padding: 15px !important;
+    margin: 12px 0 !important;
+    position: relative !important;
+    box-shadow: inset 0 0 8px rgba(255, 102, 0, 0.1) !important;
+    border-left: 3px solid #FF6600 !important;
+    overflow: hidden !important;
+}
+
+/* Add cool animated effect inside post content */
+.post-content::before, 
+.comment-content::before {
+    content: "" !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    background: radial-gradient(
+        circle at 50% 50%, 
+        rgba(255, 102, 0, 0.03) 0%, 
+        transparent 70%
+    ) !important;
+    background-size: 100% 100% !important;
+    z-index: -1 !important;
+}
+
+/* Special styling for the new rant box */
+form.flex.flex-col.gap-3.rounded-lg.border.p-4.shadow-sm {
+    background: linear-gradient(to bottom, 
+                rgba(20, 20, 20, 0.8), 
+                rgba(10, 10, 10, 0.9)) !important;
+    border: 1px solid #333333 !important;
+    box-shadow: 0 0 20px rgba(255, 102, 0, 0.1) !important;
+    position: relative !important;
+    overflow: hidden !important;
+}
+
+/* Add cool effect to rant textarea - BUT WITHOUT LEFT ORANGE BORDER */
+form.flex.flex-col.gap-3 textarea {
+    background: linear-gradient(to bottom right, 
+                rgba(25, 25, 25, 0.7), 
+                rgba(10, 10, 10, 0.9)) !important;
+    border: 1px solid rgba(255, 102, 0, 0.3) !important;
+    border-radius: 8px !important;
+    padding: 12px !important;
+    box-shadow: inset 0 0 8px rgba(255, 102, 0, 0.1) !important;
+    position: relative !important;
+    transition: all 0.3s ease !important;
+}
+
+/* Add radial glow to textarea */
+form.flex.flex-col.gap-3 textarea::before {
+    content: "" !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    background: radial-gradient(
+        circle at 50% 50%, 
+        rgba(255, 102, 0, 0.03) 0%, 
+        transparent 70%
+    ) !important;
+    z-index: -1 !important;
+}
+
+form.flex.flex-col.gap-3 textarea:focus {
+    border-color: #FF6600 !important;
+    box-shadow: 0 0 10px rgba(255, 102, 0, 0.3) !important;
+    outline: none !important;
+}
+
+/* Style the new rant button area to match post reaction areas */
+form.flex.flex-col.gap-3 > div:last-child {
+    background: linear-gradient(to right, 
+                rgba(20, 20, 20, 0.7), 
+                rgba(40, 40, 40, 0.5),
+                rgba(20, 20, 20, 0.7)) !important;
+    border-radius: 8px !important;
+    padding: 10px !important;
+    margin-top: 5px !important;
+    position: relative !important;
+}
+
+/* Add subtle light effect to new rant button area */
+form.flex.flex-col.gap-3 > div:last-child::before {
+    content: "" !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    background: linear-gradient(to bottom, 
+                rgba(255, 102, 0, 0.05), 
+                transparent) !important;
+    z-index: -1 !important;
+    border-radius: 8px !important;
+}
+
+/* User info section styling with cool gradient background */
+.flex.items-center.gap-3 {
+    padding-bottom: 12px !important;
+    position: relative !important;
+    background: linear-gradient(to right, 
+                rgba(20, 20, 20, 0.7), 
+                rgba(40, 40, 40, 0.5),
+                rgba(20, 20, 20, 0.7)) !important;
+    border-radius: 8px !important;
+    padding: 10px !important;
+    margin-bottom: 5px !important;
+}
+
+/* Replace boring dividers with cooler visual separation */
+.flex.items-center.gap-3::after {
+    content: "" !important;
+    position: absolute !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    height: 2px !important;
+    background: linear-gradient(90deg, transparent, #FF6600, transparent) !important;
+    opacity: 0.5 !important;
+}
+
+/* Cool bottom edge for post content */
+.post-content::after, 
+.comment-content::after {
+    content: "" !important;
+    position: absolute !important;
+    bottom: -3px !important;
+    left: 5% !important;
+    right: 5% !important;
+    height: 2px !important;
+    background: linear-gradient(90deg, transparent, #FF6600, transparent) !important;
+}
+
+/* Style the reaction button area */
+.flex.gap-2.pt-2 {
+    background: linear-gradient(to right, 
+                rgba(20, 20, 20, 0.7), 
+                rgba(40, 40, 40, 0.5),
+                rgba(20, 20, 20, 0.7)) !important;
+    border-radius: 8px !important;
+    padding: 10px !important;
+    margin-top: 5px !important;
+    position: relative !important;
+}
+
+/* Add subtle light effect to reaction area */
+.flex.gap-2.pt-2::before {
+    content: "" !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    background: linear-gradient(to bottom, 
+                rgba(255, 102, 0, 0.05), 
+                transparent) !important;
+    z-index: -1 !important;
+    border-radius: 8px !important;
+}
+
+/* ==== REACTION BUTTONS STYLING ==== */
+
+/* Base styling for reaction buttons */
+button:has(.ThumbsUp),
+button:has(.ThumbsDown),
+button:has(.AlertTriangle) {
+    border: 1px solid #FF6600 !important;
+    background-color: rgba(255, 102, 0, 0.08) !important;
+    border-radius: 4px !important;
+    padding: 4px 8px !important;
+    transition: all 0.3s cubic-bezier(0.68, -0.55, 0.27, 1.55) !important;
+    position: relative !important;
+    overflow: hidden !important;
+}
+
+/* Style for unfilled/unselected reaction buttons */
+button:has(.ThumbsUp) svg,
+button:has(.ThumbsDown) svg,
+button:has(.AlertTriangle) svg {
+    fill: transparent !important;
+    stroke: #FF6600 !important;
+    stroke-width: 2px !important;
+    transition: all 0.3s ease !important;
+    transform-origin: center !important;
+    position: relative !important;
+    z-index: 2 !important;
+}
+
+/* Style for filled/selected reaction buttons */
+button.bg-green-100 svg,
+button.bg-orange-100 svg,
+button.bg-red-100 svg,
+button.dark\:bg-green-900 svg,
+button.dark\:bg-orange-900 svg,
+button.dark\:bg-red-900 svg {
+    fill: #FF6600 !important;
+    stroke: #FF6600 !important;
+    animation: wiggle-in-place 1s cubic-bezier(0.36, 0.07, 0.19, 0.97) forwards !important;
+}
+
+/* Improved animation that wiggles in place with smooth scaling */
+@keyframes wiggle-in-place {
+    0% {
+        transform: scale(0.8);
+        opacity: 0.8;
+    }
+    15% {
+        transform: scale(1.4);
+        opacity: 1;
+    }
+    30% {
+        transform: scale(1.4) rotate(-12deg);
+    }
+    45% {
+        transform: scale(1.4) rotate(12deg);
+    }
+    60% {
+        transform: scale(1.4) rotate(-8deg);
+    }
+    75% {
+        transform: scale(1.4) rotate(8deg);
+    }
+    85% {
+        transform: scale(1.4) rotate(0);
+    }
+    92% {
+        transform: scale(1.1);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+/* Add subtle glow effect on active buttons */
+button.bg-green-100 svg,
+button.dark\:bg-green-900 svg {
+    filter: drop-shadow(0 0 5px rgba(0, 255, 0, 0.3)) !important;
+}
+
+button.bg-orange-100 svg,
+button.dark\:bg-orange-900 svg {
+    filter: drop-shadow(0 0 5px rgba(255, 165, 0, 0.3)) !important;
+}
+
+button.bg-red-100 svg,
+button.dark\:bg-red-900 svg {
+    filter: drop-shadow(0 0 5px rgba(255, 0, 0, 0.3)) !important;
+}
+
+/* Reaction button backgrounds when selected */
+button.bg-green-100,
+button.dark\:bg-green-900 {
+    background-color: rgba(0, 255, 0, 0.15) !important;
+    border-color: rgba(0, 255, 0, 0.5) !important;
+    box-shadow: 0 0 10px rgba(0, 255, 0, 0.2) !important;
+}
+
+button.bg-orange-100,
+button.dark\:bg-orange-900 {
+    background-color: rgba(255, 165, 0, 0.15) !important;
+    border-color: rgba(255, 165, 0, 0.5) !important;
+    box-shadow: 0 0 10px rgba(255, 165, 0, 0.2) !important;
+}
+
+button.bg-red-100,
+button.dark\:bg-red-900 {
+    background-color: rgba(255, 0, 0, 0.15) !important;
+    border-color: rgba(255, 0, 0, 0.5) !important;
+    box-shadow: 0 0 10px rgba(255, 0, 0, 0.2) !important;
+}
+
+/* Hover effects for reaction buttons */
+button:has(.ThumbsUp):hover,
+button:has(.ThumbsDown):hover,
+button:has(.AlertTriangle):hover {
+    background-color: rgba(255, 102, 0, 0.15) !important;
+    box-shadow: 0 0 8px rgba(255, 102, 0, 0.3) !important;
+    transform: translateY(-2px) !important;
+}
+
+button:has(.ThumbsUp):hover svg,
+button:has(.ThumbsDown):hover svg,
+button:has(.AlertTriangle):hover svg {
+    transform: scale(1.1) !important;
+}
+
+/* Other button styling */
+button[type="submit"] {
+    border: 1px solid #FF6600 !important;
+    background-color: rgba(255, 102, 0, 0.08) !important;
+    border-radius: 4px !important;
+    padding: 4px 8px !important;
+    transition: all 0.2s ease !important;
+}
+
+/* Special style for comments button - text-only without button styling */
+a:last-child button,
+a:has(button):last-child button {
+    border: none !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    padding: 4px !important;
+    font-weight: normal !important;
+}
+
+/* Remove border from user button in top right */
+header button, 
+.CustomUserButton button,
+[class*="UserButton"] button,
+nav + div button {
+    border: none !important;
+    background: transparent !important;
+    box-shadow: none !important;
+}
+
+/* Highlight the Rant button specifically */
+[type="submit"],
+form > div:last-child > button:last-child:not([disabled]) {
+    background-color: rgba(255, 102, 0, 0.15) !important;
+    border-width: 2px !important;
+    font-weight: bold !important;
+}
+
+/* Hover effects for submit buttons */
+button[type="submit"]:hover {
+    background-color: rgba(255, 102, 0, 0.2) !important;
+    box-shadow: 0 0 8px rgba(255, 102, 0, 0.5) !important;
+    transform: translateY(-1px) !important;
+}
+
+/* Make links and buttons more orange-fiery */
+a, button {
+    transition: all 0.2s ease-in-out;
+}
+
+a:hover, button:hover {
+    text-shadow: 0 0 10px #FF6600;
+    filter: brightness(1.2);
+}
+
+/* Set cursor pointers */
+button:not(:disabled),
+[role="button"]:not(:disabled) {
+    cursor: pointer;
 }
 
 [role="menuitem"]:not(:disabled) {
     cursor: pointer;
-}
-
-:root {
-    --warning: hsl(38 92% 50%);
-    --warning-foreground: hsl(48 96% 89%);
-}
-
-.dark {
-    --warning: hsl(48 96% 89%);
-    --warning-foreground: hsl(38 92% 50%);
 }
 
 @theme inline {

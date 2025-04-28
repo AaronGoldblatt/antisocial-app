@@ -41,11 +41,11 @@ export function CreateComment({ postId }: CreateCommentProps) {
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-2">
       <Textarea 
-        placeholder="Add a comment..." 
+        placeholder="Write a comment..." 
         value={content}
         onChange={(e) => setContent(e.target.value)}
         rows={2}
-        className="resize-none"
+        className="resize-none text-sm"
       />
       <div className="flex justify-end">
         <Button type="submit" size="sm" disabled={isLoading || !content.trim()}>

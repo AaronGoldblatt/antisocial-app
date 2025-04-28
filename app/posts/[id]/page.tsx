@@ -28,35 +28,37 @@ export default async function PostPage({ params }: PostPageProps) {
     const post = await getPost(params.id)
 
     return (
-      <main className="container max-w-2xl py-6">
-        <div className="flex flex-col gap-6">
-          <PostItem post={post} onReaction={reactToPost} />
-          
-          <div className="border-t pt-6">
-            <h2 className="mb-4 text-xl font-bold">Comments</h2>
+      <div style={{ display: "flex", justifyContent: "center", width: "100%", margin: "0 auto" }}>
+        <main className="py-6" style={{ width: "65%", maxWidth: "850px" }}>
+          <div className="flex flex-col gap-6" style={{ width: "100%" }}>
+            <PostItem post={post} onReaction={reactToPost} />
             
-            <div className="mb-6">
-              <CreateComment postId={post.id} />
-            </div>
-            
-            <div className="flex flex-col gap-4">
-              {post.comments && post.comments.length > 0 ? (
-                post.comments.map((comment: any) => (
-                  <CommentItem 
-                    key={comment.id} 
-                    comment={comment} 
-                    onReaction={reactToComment} 
-                  />
-                ))
-              ) : (
-                <div className="rounded-lg border border-dashed p-6 text-center">
-                  <p className="text-muted-foreground">No comments yet. Be the first to comment!</p>
-                </div>
-              )}
+            <div className="border-t pt-6">
+              <h2 className="mb-4 text-xl font-bold">Comments</h2>
+              
+              <div className="mb-6">
+                <CreateComment postId={post.id} />
+              </div>
+              
+              <div className="flex flex-col gap-4">
+                {post.comments && post.comments.length > 0 ? (
+                  post.comments.map((comment: any) => (
+                    <CommentItem 
+                      key={comment.id} 
+                      comment={comment} 
+                      onReaction={reactToComment} 
+                    />
+                  ))
+                ) : (
+                  <div className="rounded-lg border border-dashed p-6 text-center">
+                    <p className="text-muted-foreground">No comments yet. Be the first to comment!</p>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
-        </div>
-      </main>
+        </main>
+      </div>
     )
   } catch (error) {
     console.error("Error fetching post:", error)

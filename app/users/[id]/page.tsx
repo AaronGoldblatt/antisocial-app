@@ -29,27 +29,29 @@ export default async function UserPage({ params }: UserPageProps) {
     ])
 
     return (
-      <main className="container max-w-3xl py-6">
-        <div className="flex flex-col gap-8">
-          <UserProfile 
-            user={userProfile.user}
-            isFollowing={userProfile.isFollowing}
-            isCurrentUser={userProfile.isCurrentUser}
-            followerCount={userProfile.followerCount}
-            followingCount={userProfile.followingCount}
-            postCount={userProfile.postCount}
-          />
-          
-          <div className="border-t pt-6">
-            <h2 className="mb-4 text-xl font-bold">Rants</h2>
-            
-            <PostList 
-              initialPosts={userPosts} 
-              onReaction={reactToPost} 
+      <div style={{ display: "flex", justifyContent: "center", width: "100%", margin: "0 auto" }}>
+        <main className="py-6" style={{ width: "65%", maxWidth: "850px" }}>
+          <div className="flex flex-col gap-8" style={{ width: "100%" }}>
+            <UserProfile 
+              user={userProfile.user}
+              isFollowing={userProfile.isFollowing}
+              isCurrentUser={userProfile.isCurrentUser}
+              followerCount={userProfile.followerCount}
+              followingCount={userProfile.followingCount}
+              postCount={userProfile.postCount}
             />
+            
+            <div className="border-t pt-6">
+              <h2 className="mb-4 text-xl font-bold">Rants</h2>
+              
+              <PostList 
+                initialPosts={userPosts} 
+                onReaction={reactToPost} 
+              />
+            </div>
           </div>
-        </div>
-      </main>
+        </main>
+      </div>
     )
   } catch (error) {
     console.error("Error fetching user profile:", error)

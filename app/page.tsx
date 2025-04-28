@@ -21,19 +21,21 @@ export default async function Home() {
   const posts = await getFeedPosts()
 
   return (
-    <main className="container max-w-2xl py-6">
-      <div className="flex flex-col gap-6">
-        <h1 className="text-3xl font-bold">Your Feed</h1>
-        
-        <CreatePost />
-        
-        <div className="flex flex-col gap-4">
-          <PostList 
-            initialPosts={posts} 
-            onReaction={reactToPost} 
-          />
+    <div style={{ display: "flex", justifyContent: "center", width: "100%", margin: "0 auto" }}>
+      <main className="py-6" style={{ width: "65%", maxWidth: "850px" }}>
+        <div className="flex flex-col gap-6" style={{ width: "100%" }}>
+          <h1 className="text-3xl font-bold">Your Feed</h1>
+          
+          <CreatePost />
+          
+          <div className="flex flex-col gap-4">
+            <PostList 
+              initialPosts={posts} 
+              onReaction={reactToPost} 
+            />
+          </div>
         </div>
-      </div>
-    </main>
+      </main>
+    </div>
   )
 }

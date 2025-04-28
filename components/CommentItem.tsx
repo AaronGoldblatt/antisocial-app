@@ -32,6 +32,9 @@ interface CommentItemProps {
 
 export function CommentItem({ comment, onReaction }: CommentItemProps) {
   const [isLoading, setIsLoading] = useState(false)
+  const [formattedTime] = useState(() => 
+    formatDistanceToNow(new Date(comment.createdAt), { addSuffix: true })
+  )
 
   const handleReaction = async (type: string) => {
     if (isLoading) return
@@ -64,12 +67,13 @@ export function CommentItem({ comment, onReaction }: CommentItemProps) {
             {comment.user.name}
           </Link>
           <p className="text-xs text-muted-foreground">
-            {formatDistanceToNow(new Date(comment.createdAt), { addSuffix: true })}
+            {formattedTime}
           </p>
         </div>
       </div>
 
-      <p className="whitespace-pre-wrap break-words text-sm">{comment.content}</p>
+      {/* Comment content in Comic Sans */}
+      <p className="comment-content whitespace-pre-wrap break-words text-sm">{comment.content}</p>
 
       {comment.imageUrl && (
         <div className="overflow-hidden rounded-md">

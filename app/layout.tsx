@@ -8,6 +8,7 @@ import { Header } from "@/components/header"
 import { Providers } from "./providers"
 import { Toaster } from "sonner"
 import { FontEnforcer } from "@/components/FontEnforcer"
+import { redirect } from "next/navigation"
 
 const inter = Inter({ subsets: ["latin"] })
 

@@ -1,16 +1,19 @@
 import { type NextRequest, NextResponse } from "next/server"
 
 export async function middleware(request: NextRequest) {
+    // Create a response so we can add custom headers
+    const response = NextResponse.next()
+    
+    // Add current pathname as a header for use in layout.tsx
+    response.headers.set('x-pathname', request.nextUrl.pathname)
+    
     // Handle sign-out redirection by allowing the request through
     if (request.nextUrl.pathname === '/auth/sign-out') {
-        return NextResponse.next()
+        return response
     }
 
     // Also clear cookie on fresh sign-in
     if (request.nextUrl.pathname === '/auth/sign-in') {
-        // Create a response object so we can modify cookies
-        const response = NextResponse.next()
-        
         // Remove the session cookie if it exists
         response.cookies.delete('has_posted_this_session')
         
@@ -29,10 +32,11 @@ export async function middleware(request: NextRequest) {
     }
 
     // For non-auth pages, check if the user has posted in this session
-    // Exclude welcome page, API routes, and static assets to avoid redirect loops
+    // Exclude welcome page, homepage, API routes, and static assets to avoid redirect loops
     if (!request.nextUrl.pathname.startsWith('/auth') && 
         !request.nextUrl.pathname.startsWith('/api') &&
-        request.nextUrl.pathname !== '/welcome') {
+        request.nextUrl.pathname !== '/welcome' &&
+        request.nextUrl.pathname !== '/') { // Allow access to homepage
         
         // Check if they've posted this session
         const hasPostedThisSession = request.cookies.get('has_posted_this_session')?.value === 'true'
@@ -42,7 +46,7 @@ export async function middleware(request: NextRequest) {
         }
     }
 
-    return NextResponse.next()
+    return response
 }
 
 export const config = {

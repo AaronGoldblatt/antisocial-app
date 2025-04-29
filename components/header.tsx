@@ -3,6 +3,7 @@
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { useEffect } from "react"
+import Image from "next/image"
 
 import { cn } from "@/lib/utils"
 import { Home, Users, Search } from "lucide-react"
@@ -36,13 +37,20 @@ export function Header({ user }: HeaderProps) {
       <div style={{ display: "flex", justifyContent: "center", width: "100%", margin: "0 auto" }}>
         <div className="flex h-16 items-center justify-between px-4" style={{ width: "65%", maxWidth: "850px" }}>
           <div className="flex items-center gap-6">
-            <Link
+            <a
               href="/"
               className={cn("font-bold text-xl", showNav && "hidden sm:inline-block")}
             >
-              AntiSocial
-            </Link>
-            
+              <Image
+                src="/banner.png"
+                alt="AntiSocial Banner"
+                width={220}
+                height={40}
+                style={{ maxWidth: "220px", height: "auto" }}
+                priority
+              />
+            </a>
+
             {showNav && (
               <nav className="flex items-center gap-1 sm:gap-2">
                 <Link

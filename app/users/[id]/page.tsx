@@ -6,7 +6,7 @@ import { getUserProfile } from "@/actions/users"
 import { getUserPosts, reactToPost } from "@/actions/posts"
 import { headers } from "next/headers"
 
-type UserPageProps = {
+interface UserPageProps {
   params: {
     id: string
   }

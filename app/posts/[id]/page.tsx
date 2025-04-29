@@ -8,7 +8,7 @@ import { reactToPost } from "@/actions/posts"
 import { reactToComment } from "@/actions/comments"
 import { headers } from "next/headers"
 
-type PostPageProps = {
+interface PostPageProps {
   params: {
     id: string
   }

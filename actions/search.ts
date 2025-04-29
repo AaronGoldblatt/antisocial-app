@@ -13,26 +13,58 @@ const searchSchema = z.object({
   query: z.string().min(1).max(100)
 })
 
-// Search functionality (placeholder for now)
+// Search functionality
 export async function search(data: z.infer<typeof searchSchema>) {
   const session = await auth.api.getSession({
     headers: await headers()
   });
+  
+  if (!session?.user?.id) {
+    return {
+      posts: [],
+      users: [],
+      error: "You must be logged in to search"
+    }
+  }
   
   const query = data.query.trim()
   if (!query) {
     return {
       posts: [],
       users: [],
-      message: "Search functionality is not implemented yet. This is a placeholder."
+      error: "Search query cannot be empty"
     }
   }
 
-  // Placeholder response for now - we'll implement this in the future
-  return {
-    posts: [],
-    users: [],
-    message: "Search functionality is not implemented yet. This is a placeholder."
+  try {
+    // Search for posts using trigram search (using ILIKE for partial matching)
+    const searchedPosts = await db.query.posts.findMany({
+      where: ilike(posts.content, `%${query}%`),
+      orderBy: [desc(posts.createdAt)],
+      limit: 20,
+      with: {
+        user: true,
+      },
+    });
+
+    // Search for users (by name)
+    const searchedUsers = await db.query.users.findMany({
+      where: ilike(users.name, `%${query}%`),
+      limit: 20,
+    });
+
+    return {
+      posts: searchedPosts,
+      users: searchedUsers,
+      success: true
+    }
+  } catch (error) {
+    console.error("Search error:", error);
+    return {
+      posts: [],
+      users: [],
+      error: "Failed to perform search"
+    }
   }
 }
 

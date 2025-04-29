@@ -5,10 +5,30 @@ import { auth } from "@/lib/auth"
 import { headers } from "next/headers"
 
 export default async function Home() {
-  // Get fresh session data
+  // Get fresh session data and request headers
+  const headersList = await headers();
   const session = await auth.api.getSession({
-    headers: await headers()
+    headers: headersList
   });
+  
+  // Check if user is authenticated
+  if (session?.user) {
+    // Check referer header to see if coming from auth pages
+    const referer = headersList.get('referer') || '';
+    
+    // If we're coming from auth pages or we have a session cookie
+    // that was just set, redirect to /welcome
+    if (referer.includes('/auth/') || 
+        referer.includes('/auth/sign-in') || 
+        referer.includes('/auth/sign-up') || 
+        referer.includes('/auth/callback')) {
+      console.log('Redirecting from homepage to welcome after auth');
+      redirect('/welcome');
+    }
+    
+    // For other authenticated users navigating here directly,
+    // offer the option to go to feed but don't force redirect
+  }
   
   // Render the landing page whether user is logged in or not
   return (

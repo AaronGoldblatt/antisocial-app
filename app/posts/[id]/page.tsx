@@ -7,12 +7,25 @@ import { getPost } from "@/actions/posts"
 import { reactToPost } from "@/actions/posts"
 import { reactToComment } from "@/actions/comments"
 import { headers } from "next/headers"
+import { Metadata } from "next"
 
-export default async function PostPage({ 
+// Add generateMetadata to help Next.js understand the structure
+export async function generateMetadata({ 
   params 
 }: { 
   params: { id: string } 
-}) {
+}): Promise<Metadata> {
+  return {
+    title: `Post ${params.id} | AntiSocial`,
+    description: "View post and comments",
+  }
+}
+
+// Use the Promise structure to match auth page
+export default async function PostPage({ params }: { params: Promise<{ id: string }> }) {
+  // Extract id from params Promise
+  const { id } = await params;
+  
   const session = await auth.api.getSession({
     headers: await headers()
   });
@@ -23,7 +36,7 @@ export default async function PostPage({
   }
 
   try {
-    const post = await getPost(params.id)
+    const post = await getPost(id)
 
     return (
       <div style={{ display: "flex", justifyContent: "center", width: "100%", margin: "0 auto" }}>

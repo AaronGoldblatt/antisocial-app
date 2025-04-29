@@ -5,12 +5,25 @@ import { UserProfile } from "@/components/UserProfile"
 import { getUserProfile } from "@/actions/users"
 import { getUserPosts, reactToPost } from "@/actions/posts"
 import { headers } from "next/headers"
+import { Metadata } from "next"
 
-export default async function UserPage({ 
+// Add generateMetadata to help Next.js understand the structure
+export async function generateMetadata({ 
   params 
 }: { 
   params: { id: string } 
-}) {
+}): Promise<Metadata> {
+  return {
+    title: `User Profile | AntiSocial`,
+    description: "View user profile and posts",
+  }
+}
+
+// Use the Promise structure to match auth page
+export default async function UserPage({ params }: { params: Promise<{ id: string }> }) {
+  // Extract id from params Promise
+  const { id } = await params;
+  
   const session = await auth.api.getSession({
     headers: await headers()
   });
@@ -22,8 +35,8 @@ export default async function UserPage({
 
   try {
     const [userProfile, userPosts] = await Promise.all([
-      getUserProfile(params.id),
-      getUserPosts(params.id)
+      getUserProfile(id),
+      getUserPosts(id)
     ])
 
     return (

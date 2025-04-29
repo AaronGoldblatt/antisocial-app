@@ -32,7 +32,7 @@ export function WelcomeCreatePost() {
       
       // Force a complete page refresh rather than client navigation
       // This ensures the layout re-renders with the new session state
-      window.location.href = "/"
+      window.location.href = "/feed"
     } catch (error) {
       toast.error("Failed to create post")
       console.error(error)
@@ -51,7 +51,7 @@ export function WelcomeCreatePost() {
     
     // Force a complete page refresh rather than client navigation
     // This ensures the layout re-renders with the new session state
-    window.location.href = "/"
+    window.location.href = "/feed"
   }
 
   return (

@@ -39,7 +39,7 @@ export function Header({ user }: HeaderProps) {
   }
   
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-background/90 backdrop-blur-sm">
+    <header className="sticky top-0 z-50 w-full border-b bg-background backdrop-blur-sm">
       <div style={{ display: "flex", justifyContent: "center", width: "100%", margin: "0 auto" }}>
         <div className="flex h-16 items-center justify-between px-4" style={{ width: "65%", maxWidth: "850px" }}>
           <div className="flex items-center gap-6">

@@ -42,13 +42,13 @@ export function Header({ user }: HeaderProps) {
       <div style={{ display: "flex", justifyContent: "center", width: "100%", margin: "0 auto" }}>
         <div className="flex h-16 items-center justify-between px-4" style={{ width: "65%", maxWidth: "850px" }}>
           <div className="flex items-center gap-6">
-            <a
+            <Link
               href="/"
-              onClick={handleLogoClick}
               className="font-bold text-xl cursor-pointer"
+              prefetch={false}
             >
               AntiSocial
-            </a>
+            </Link>
             
             {showNav && (
               <nav className="flex items-center gap-1 sm:gap-2">

@@ -58,7 +58,7 @@ export function WelcomeCreatePost() {
     <div className="flex flex-col gap-4">
       <form onSubmit={handleSubmit} className="flex flex-col gap-3 rounded-lg border p-4 shadow-sm">
         <Textarea 
-          placeholder="What's on your mind? Rant away!" 
+          placeholder="What&apos;s on your mind? Rant away!" 
           value={content}
           onChange={(e) => setContent(e.target.value)}
           rows={3}
@@ -78,7 +78,7 @@ export function WelcomeCreatePost() {
           onClick={handleSkip}
           className="text-muted-foreground hover:text-foreground text-sm"
         >
-          I'm a shy loser, just let me in pwease 🥺
+          I&apos;m a shy loser, just let me in pwease 🥺
         </Button>
       </div>
     </div>

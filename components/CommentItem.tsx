@@ -98,7 +98,26 @@ export function CommentItem({ comment, onReaction }: CommentItemProps) {
       </div>
 
       {/* Comment content in Comic Sans */}
-      <p className="comment-content whitespace-pre-wrap break-words text-sm">{comment.content}</p>
+      <p 
+        className="comment-content whitespace-pre-wrap break-words text-sm"
+        style={{ 
+          fontFamily: "Comic Sans MS, Comic Sans, 'Comic Neue', cursive",
+          fontWeight: "normal",
+          letterSpacing: "normal",
+          fontStyle: "normal",
+          fontSize: "14px",
+          color: "#FF6600"
+        }}
+      >
+        <span style={{ 
+          fontFamily: "Comic Sans MS, Comic Sans, 'Comic Neue', cursive",
+          fontWeight: "normal",
+          display: "inline-block",
+          width: "100%"
+        }}>
+          {comment.content}
+        </span>
+      </p>
 
       {comment.imageUrl && (
         <div className="overflow-hidden rounded-md">

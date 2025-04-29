@@ -1,7 +1,9 @@
 @import url('https://fonts.googleapis.com/css2?family=Creepster&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&display=swap');
+/* Comic Sans MS is already available on most systems so no import needed */
 @import "tailwindcss";
 @import "./custom.css";
+@import "./comic-sans.css";
 
 @plugin "tailwindcss-animate";
 
@@ -205,4 +207,33 @@ button[data-just-clicked="dislike"] div {
 button[data-just-clicked="like"] div {
   animation: thumbsUpAnimation 0.7s cubic-bezier(0.18, 0.89, 0.32, 1.28);
   display: inline-block;
+}
+
+/* Direct Comic Sans styling for post and comment content */
+.post-content,
+.comment-content,
+p.post-content,
+p.comment-content,
+.whitespace-pre-wrap.break-words,
+[class*="post-content"],
+[class*="comment-content"],
+p.whitespace-pre-wrap,
+.whitespace-pre-wrap,
+p[class*="post-content"],
+p[class*="comment-content"] {
+  font-family: "Comic Sans MS", "Comic Sans", "Comic Neue", cursive !important;
+  font-weight: normal !important;
+  letter-spacing: normal !important;
+  line-height: 1.5 !important;
+  font-style: normal !important;
+}
+
+/* Extra important styles - maximum override */
+html body .post-content,
+html body .comment-content,
+html body [class*="post-content"],
+html body [class*="comment-content"],
+html body p.whitespace-pre-wrap,
+html body p.break-words {
+  font-family: "Comic Sans MS", "Comic Sans", "Comic Neue", cursive !important;
 }

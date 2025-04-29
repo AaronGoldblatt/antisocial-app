@@ -144,15 +144,64 @@ div[class*=" next-"] {
 p.post-content,
 p.comment-content,
 .post-content,
-.comment-content {
-    font-family: 'Comic Neue', 'Comic Sans MS', cursive !important;
+.comment-content,
+div.post-content,
+div.comment-content,
+*[class*="post-content"],
+*[class*="comment-content"],
+article p,
+.post p,
+.comment p {
+    font-family: 'Comic Sans MS', 'Comic Neue', cursive !important;
     letter-spacing: normal;
+    font-weight: normal !important;
+}
+
+/* Extra specificity for post content */
+html body [class*="post-content"],
+html body [class*="comment-content"] {
+    font-family: 'Comic Sans MS', 'Comic Neue', cursive !important;
 }
 
 /* Ensure all form elements have proper ids and names - this won't set those attributes directly,
 but we're handling that in FontEnforcer.tsx component */
 input, select, textarea {
     font-family: 'Creepster', cursive !important;
+}
+
+/* COMIC SANS ENFORCEMENT - Maximum specificity */
+p.post-content, 
+.post-content,
+p.post-content *,
+.post-content *,
+p[class*="post-content"],
+div[class*="post-content"],
+.whitespace-pre-wrap.break-words,
+p.whitespace-pre-wrap,
+html body p.post-content,
+html body .post-content,
+html body p.whitespace-pre-wrap,
+html body [class*="post-content"] {
+    font-family: 'Comic Sans MS', 'Comic Sans', 'Comic Neue', cursive !important;
+    letter-spacing: normal !important;
+    font-weight: normal !important;
+    font-style: normal !important;
+}
+
+/* Apply Comic Sans to all paragraph elements in posts to be safe */
+.flex.flex-col.gap-3.rounded-lg.border.p-4.shadow-sm p:not(.text-xs) {
+    font-family: 'Comic Sans MS', 'Comic Sans', 'Comic Neue', cursive !important;
+    letter-spacing: normal !important;
+    font-weight: normal !important;
+    font-style: normal !important;
+}
+
+/* Target the specific element we saw in the DevTools inspection */
+p.whitespace-pre-wrap.break-words {
+    font-family: 'Comic Sans MS', 'Comic Sans', 'Comic Neue', cursive !important;
+    letter-spacing: normal !important;
+    font-weight: normal !important;
+    font-style: normal !important;
 }
 
 /*********************************************

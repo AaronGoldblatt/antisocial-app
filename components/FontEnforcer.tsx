@@ -2,116 +2,145 @@
 
 import { useEffect } from 'react'
 
+/**
+ * This component forces the application of Comic Sans MS to post and comment content
+ * by directly manipulating the DOM through JavaScript
+ */
 export function FontEnforcer() {
   useEffect(() => {
-    // Apply font styles after component mounts (client-side only)
-    const applyFontStyles = () => {
-      // Set all elements to angry font first
-      document.querySelectorAll('*').forEach(el => {
-        if (el instanceof HTMLElement) {
-          el.style.fontFamily = "'Creepster', cursive";
-          el.style.color = "#FF6600";
+    // Create a style tag to forcefully override font styles
+    const injectComicSansStylesheet = () => {
+      const styleElement = document.createElement('style');
+      styleElement.textContent = `
+        /* Force Comic Sans on any post content */
+        p.post-content, 
+        p.comment-content, 
+        .post-content, 
+        .comment-content, 
+        p.whitespace-pre-wrap, 
+        p.break-words,
+        .whitespace-pre-wrap, 
+        .break-words,
+        p.whitespace-pre-wrap.break-words,
+        div:has(> p.whitespace-pre-wrap),
+        div:has(> .whitespace-pre-wrap) p,
+        .post-content *,
+        .comment-content *,
+        div.flex.flex-col.gap-3.rounded-lg.border.p-4.shadow-sm > p,
+        div[class*="flex"][class*="border"] > p:not([class*="text-xs"]) {
+          font-family: "Comic Sans MS", "Comic Sans", "Comic Neue", sans-serif !important;
+          font-weight: normal !important;
+          letter-spacing: normal !important;
+          font-style: normal !important;
+          -webkit-font-smoothing: auto !important;
+          font-variant: normal !important;
         }
+      `;
+      document.head.appendChild(styleElement);
+    };
+
+    // Directly manipulate DOM elements to force Comic Sans
+    const forceComicSans = () => {
+      // Target elements by class
+      const selectors = [
+        '.post-content',
+        '.comment-content',
+        'p.whitespace-pre-wrap',
+        'p.break-words',
+        '.whitespace-pre-wrap',
+        '.whitespace-pre-wrap.break-words'
+      ];
+
+      // Find all elements that match the selectors
+      selectors.forEach(selector => {
+        const elements = document.querySelectorAll(selector);
+        elements.forEach(el => {
+          if (el instanceof HTMLElement) {
+            el.style.cssText = 'font-family: "Comic Sans MS", "Comic Sans", "Comic Neue", sans-serif !important;';
+            
+            // Also force on all child elements
+            const children = el.querySelectorAll('*');
+            children.forEach(child => {
+              if (child instanceof HTMLElement) {
+                child.style.cssText = 'font-family: "Comic Sans MS", "Comic Sans", "Comic Neue", sans-serif !important;';
+              }
+            });
+          }
+        });
       });
-      
-      // Then specifically override post and comment content with Comic Sans
-      document.querySelectorAll('p.post-content, p.comment-content, .post-content, .comment-content').forEach(el => {
+
+      // Special targeting for whitespace-pre-wrap which might be the actual post content
+      document.querySelectorAll('p.whitespace-pre-wrap').forEach(el => {
         if (el instanceof HTMLElement) {
-          el.style.fontFamily = "'Comic Neue', 'Comic Sans MS', cursive";
-        }
-      });
-      
-      // Add id and name to all form fields that don't have them
-      document.querySelectorAll('input, textarea, select').forEach((el, index) => {
-        const element = el as HTMLElement;
-        if (element instanceof HTMLInputElement || 
-            element instanceof HTMLTextAreaElement || 
-            element instanceof HTMLSelectElement) {
-          if (!element.id) {
-            element.id = `form-field-${index}`;
-          }
-          if (!element.name) {
-            element.name = element.id;
-          }
+          // Set extreme inline style with !important
+          el.setAttribute('style', 'font-family: "Comic Sans MS", "Comic Sans", "Comic Neue", sans-serif !important;');
         }
       });
     };
+
+    // Insert a new Comic Sans font via @font-face
+    const insertFontFace = () => {
+      const fontFaceStyle = document.createElement('style');
+      fontFaceStyle.textContent = `
+        @font-face {
+          font-family: 'ComicSansForced';
+          src: local('Comic Sans MS'), local('Comic Sans');
+          font-weight: normal;
+          font-style: normal;
+        }
+        
+        p.whitespace-pre-wrap,
+        .whitespace-pre-wrap,
+        p.break-words,
+        .post-content,
+        .comment-content {
+          font-family: 'ComicSansForced', 'Comic Sans MS', 'Comic Sans', cursive !important;
+        }
+      `;
+      document.head.appendChild(fontFaceStyle);
+    };
     
-    // Apply immediately and again after a short delay to catch post-rendering elements
-    applyFontStyles();
+    // Apply all strategies
+    insertFontFace();
+    injectComicSansStylesheet();
     
-    // Use multiple timeouts to ensure we catch elements rendered at different times
+    // Run forceComicSans immediately and after a delay
+    forceComicSans();
+    
+    // Set multiple timeouts to catch dynamically loaded content
     const timeouts = [
-      setTimeout(applyFontStyles, 100),
-      setTimeout(applyFontStyles, 500),
-      setTimeout(applyFontStyles, 1000),
-      setTimeout(applyFontStyles, 2000) // Add one more longer timeout for slower rendering
+      setTimeout(forceComicSans, 100),
+      setTimeout(forceComicSans, 500),
+      setTimeout(forceComicSans, 1000),
+      setTimeout(forceComicSans, 2000)
     ];
     
-    // Create observer to apply to dynamically added elements
+    // Use MutationObserver to catch dynamically added content
     const observer = new MutationObserver((mutations) => {
-      let shouldApplyStyles = false;
+      let hasNewElements = false;
       
       mutations.forEach(mutation => {
         if (mutation.addedNodes.length > 0) {
-          shouldApplyStyles = true;
-          
-          // Apply immediate styling to new nodes
-          mutation.addedNodes.forEach(node => {
-            // If it's an element node
-            if (node.nodeType === 1) {
-              const element = node as HTMLElement;
-              
-              // Apply default angry font
-              element.style.fontFamily = "'Creepster', cursive";
-              element.style.color = "#FF6600";
-              
-              // Process specific elements
-              if (element.classList.contains('post-content') || 
-                  element.classList.contains('comment-content')) {
-                element.style.fontFamily = "'Comic Neue', 'Comic Sans MS', cursive";
-              }
-              
-              // Process form elements
-              if (element instanceof HTMLInputElement || 
-                  element instanceof HTMLTextAreaElement || 
-                  element instanceof HTMLSelectElement) {
-                if (!element.id) {
-                  element.id = `form-field-dynamic-${Date.now()}`;
-                }
-                if (!element.name) {
-                  element.name = element.id;
-                }
-              }
-            }
-          });
+          hasNewElements = true;
         }
       });
       
-      // Apply full styles if needed (debounced to reduce performance impact)
-      if (shouldApplyStyles) {
-        // Use requestAnimationFrame to optimize performance
-        requestAnimationFrame(() => {
-          applyFontStyles();
-        });
+      if (hasNewElements) {
+        forceComicSans();
       }
     });
     
-    // Start observing the entire document
-    observer.observe(document.documentElement, { 
+    // Observe the whole document for changes
+    observer.observe(document.body, { 
       childList: true, 
-      subtree: true,
-      attributes: false, // Only need to observe structure changes, not attribute changes
-      characterData: false
+      subtree: true 
     });
     
-    // Cleanup
     return () => {
       observer.disconnect();
       timeouts.forEach(timeout => clearTimeout(timeout));
     };
   }, []);
 
-  // This component doesn't render anything
   return null;
 } 

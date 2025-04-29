@@ -99,7 +99,20 @@ export function PostItem({ post, onReaction }: PostItemProps) {
       </div>
 
       {/* Post content in Comic Sans */}
-      <p className="post-content whitespace-pre-wrap break-words">{post.content}</p>
+      <p 
+        id="post-content-text"
+        className="post-content whitespace-pre-wrap break-words" 
+        style={{ 
+          fontFamily: "Comic Sans MS, Comic Sans, 'Comic Neue', cursive",
+          fontWeight: "normal",
+          letterSpacing: "normal",
+          fontStyle: "normal",
+          fontSize: "16px",
+          color: "#FF6600"
+        }}
+      >
+        {post.content}
+      </p>
 
       {post.imageUrl && (
         <div className="overflow-hidden rounded-md">

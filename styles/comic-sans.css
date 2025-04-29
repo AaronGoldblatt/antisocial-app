@@ -1,0 +1,51 @@
+/* This file contains only Comic Sans enforcement styles */
+
+/* Basic selector targeting */
+.post-content,
+.comment-content,
+p.post-content,
+p.comment-content,
+.whitespace-pre-wrap,
+.break-words,
+.whitespace-pre-wrap.break-words {
+  font-family: "Comic Sans MS", "Comic Sans", "Comic Neue", cursive !important;
+  font-weight: normal !important;
+  letter-spacing: normal !important;
+  font-style: normal !important;
+}
+
+/* Wildcard selectors for dynamic classes */
+[class*="post-content"],
+[class*="comment-content"] {
+  font-family: "Comic Sans MS", "Comic Sans", "Comic Neue", cursive !important;
+  font-weight: normal !important;
+  letter-spacing: normal !important;
+  font-style: normal !important;
+}
+
+/* High specificity selectors */
+html body .post-content,
+html body .comment-content,
+html body p.post-content,
+html body p.comment-content,
+html body .whitespace-pre-wrap,
+html body .break-words,
+html body .whitespace-pre-wrap.break-words {
+  font-family: "Comic Sans MS", "Comic Sans", "Comic Neue", cursive !important;
+  font-weight: normal !important;
+  letter-spacing: normal !important;
+  font-style: normal !important;
+}
+
+/* Direct attribute selectors */
+[style*="font-family"] {
+  font-family: "Comic Sans MS", "Comic Sans", "Comic Neue", cursive !important;
+}
+
+/* Target specific post container */
+.flex.flex-col.gap-3.rounded-lg.border.p-4.shadow-sm p:not(.text-xs):not([class*="muted"]) {
+  font-family: "Comic Sans MS", "Comic Sans", "Comic Neue", cursive !important;
+  font-weight: normal !important;
+  letter-spacing: normal !important;
+  font-style: normal !important;
+} 

@@ -1,15 +1,49 @@
-import { redirect } from "next/navigation"
-import { auth } from "@/lib/auth"
-import { headers } from "next/headers"
+"use client"
 
-export default async function SearchPage() {
-  const session = await auth.api.getSession({
-    headers: await headers()
-  });
-  
-  // Redirect to login if not authenticated
-  if (!session?.user) {
-    redirect("/auth/sign-in")
+import { useState } from "react"
+import { useRouter } from "next/navigation"
+import Link from "next/link"
+import Image from "next/image"
+import { search } from "@/actions/search"
+
+import { Input } from "@/components/ui/input"
+import { Button } from "@/components/ui/button"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Loader2, Search, User, FileText } from "lucide-react"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
+
+export default function SearchPage() {
+  const router = useRouter()
+  const [query, setQuery] = useState("")
+  const [loading, setLoading] = useState(false)
+  const [posts, setPosts] = useState([])
+  const [users, setUsers] = useState([])
+  const [error, setError] = useState("")
+  const [activeTab, setActiveTab] = useState("all")
+
+  const handleSearch = async (e) => {
+    e.preventDefault()
+    if (!query.trim()) return
+    
+    setLoading(true)
+    setError("")
+    
+    try {
+      const result = await search({ query })
+      
+      if (result.error) {
+        setError(result.error)
+      } else {
+        setPosts(result.posts || [])
+        setUsers(result.users || [])
+      }
+    } catch (err) {
+      console.error("Search error:", err)
+      setError("Failed to perform search")
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
@@ -18,14 +52,189 @@ export default async function SearchPage() {
         <div className="flex flex-col gap-6" style={{ width: "100%" }}>
           <h1 className="text-3xl font-bold">Search</h1>
           
-          <div className="flex flex-col items-center justify-center rounded-lg border border-dashed p-12 text-center">
-            <h3 className="text-2xl font-medium mb-2">Search Coming Soon</h3>
-            <p className="text-muted-foreground">
-              This feature is not implemented yet. Check back later!
-            </p>
-          </div>
+          <form onSubmit={handleSearch} className="flex w-full gap-2">
+            <Input
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder="Search for posts or users..."
+              className="flex-1"
+            />
+            <Button type="submit" disabled={loading}>
+              {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Search className="h-4 w-4" />}
+              <span className="ml-2">Search</span>
+            </Button>
+          </form>
+          
+          {error && (
+            <div className="text-red-500">{error}</div>
+          )}
+          
+          {(posts.length > 0 || users.length > 0) && (
+            <Tabs defaultValue="all" value={activeTab} onValueChange={setActiveTab}>
+              <TabsList className="grid w-full grid-cols-3">
+                <TabsTrigger value="all">All Results</TabsTrigger>
+                <TabsTrigger value="posts">Posts ({posts.length})</TabsTrigger>
+                <TabsTrigger value="users">Users ({users.length})</TabsTrigger>
+              </TabsList>
+              
+              <TabsContent value="all" className="space-y-4 mt-4">
+                {users.length > 0 && (
+                  <div>
+                    <h2 className="text-xl font-semibold mb-3">Users</h2>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      {users.slice(0, 4).map((user) => (
+                        <UserCard key={user.id} user={user} />
+                      ))}
+                    </div>
+                    {users.length > 4 && (
+                      <Button 
+                        variant="ghost" 
+                        className="mt-2 w-full"
+                        onClick={() => setActiveTab("users")}
+                      >
+                        View all {users.length} users
+                      </Button>
+                    )}
+                  </div>
+                )}
+                
+                {posts.length > 0 && (
+                  <div>
+                    <h2 className="text-xl font-semibold mb-3">Posts</h2>
+                    <div className="flex flex-col gap-4">
+                      {posts.slice(0, 3).map((post) => (
+                        <PostCard key={post.id} post={post} />
+                      ))}
+                    </div>
+                    {posts.length > 3 && (
+                      <Button 
+                        variant="ghost" 
+                        className="mt-2 w-full"
+                        onClick={() => setActiveTab("posts")}
+                      >
+                        View all {posts.length} posts
+                      </Button>
+                    )}
+                  </div>
+                )}
+              </TabsContent>
+              
+              <TabsContent value="users" className="space-y-4 mt-4">
+                <h2 className="text-xl font-semibold">Users</h2>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  {users.map((user) => (
+                    <UserCard key={user.id} user={user} />
+                  ))}
+                </div>
+                {users.length === 0 && (
+                  <div className="text-center py-8 text-muted-foreground">
+                    No users found matching "{query}"
+                  </div>
+                )}
+              </TabsContent>
+              
+              <TabsContent value="posts" className="space-y-4 mt-4">
+                <h2 className="text-xl font-semibold">Posts</h2>
+                <div className="flex flex-col gap-4">
+                  {posts.map((post) => (
+                    <PostCard key={post.id} post={post} />
+                  ))}
+                </div>
+                {posts.length === 0 && (
+                  <div className="text-center py-8 text-muted-foreground">
+                    No posts found matching "{query}"
+                  </div>
+                )}
+              </TabsContent>
+            </Tabs>
+          )}
+          
+          {!loading && query && posts.length === 0 && users.length === 0 && !error && (
+            <div className="text-center py-8 text-muted-foreground">
+              No results found for "{query}"
+            </div>
+          )}
+          
+          {!query && (
+            <div className="flex flex-col items-center justify-center rounded-lg border border-dashed p-12 text-center">
+              <Search className="h-12 w-12 text-muted-foreground mb-4" />
+              <h3 className="text-2xl font-medium mb-2">Search for Posts & Users</h3>
+              <p className="text-muted-foreground">
+                Enter a search term to find relevant content and users
+              </p>
+            </div>
+          )}
         </div>
       </main>
     </div>
+  )
+}
+
+// User Card Component
+function UserCard({ user }) {
+  return (
+    <Card>
+      <CardHeader className="flex flex-row items-center gap-4 pb-2">
+        <Avatar className="h-10 w-10">
+          <AvatarImage src={user.image || ""} alt={user.name} />
+          <AvatarFallback>{user.name?.charAt(0)}</AvatarFallback>
+        </Avatar>
+        <div>
+          <CardTitle className="text-base">{user.name}</CardTitle>
+        </div>
+      </CardHeader>
+      <CardFooter className="pt-2">
+        <Link href={`/users/${user.id}`} passHref>
+          <Button variant="secondary" size="sm" className="w-full">
+            <User className="h-4 w-4 mr-2" />
+            View Profile
+          </Button>
+        </Link>
+      </CardFooter>
+    </Card>
+  )
+}
+
+// Post Card Component
+function PostCard({ post }) {
+  return (
+    <Card>
+      <CardHeader>
+        <div className="flex items-center gap-2">
+          <Avatar className="h-8 w-8">
+            <AvatarImage src={post.user?.image || ""} alt={post.user?.name} />
+            <AvatarFallback>{post.user?.name?.charAt(0)}</AvatarFallback>
+          </Avatar>
+          <Link href={`/users/${post.user?.id}`}>
+            <CardTitle className="text-sm font-medium">{post.user?.name}</CardTitle>
+          </Link>
+        </div>
+      </CardHeader>
+      <CardContent>
+        <p className="text-sm text-muted-foreground mb-2">
+          {new Date(post.createdAt).toLocaleDateString()}
+        </p>
+        <p className="line-clamp-3">{post.content}</p>
+        {post.imageUrl && (
+          <div className="mt-2 relative h-48 w-full overflow-hidden rounded-md">
+            <Image
+              src={post.imageUrl}
+              alt="Post image"
+              fill
+              sizes="(max-width: 768px) 100vw, 600px"
+              className="object-cover"
+            />
+          </div>
+        )}
+      </CardContent>
+      <CardFooter>
+        <Link href={`/posts/${post.id}`} passHref>
+          <Button variant="secondary" size="sm">
+            <FileText className="h-4 w-4 mr-2" />
+            View Post
+          </Button>
+        </Link>
+      </CardFooter>
+    </Card>
   )
 } 

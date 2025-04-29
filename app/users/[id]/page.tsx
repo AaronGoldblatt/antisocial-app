@@ -6,13 +6,11 @@ import { getUserProfile } from "@/actions/users"
 import { getUserPosts, reactToPost } from "@/actions/posts"
 import { headers } from "next/headers"
 
-interface UserPageProps {
-  params: {
-    id: string
-  }
-}
-
-export default async function UserPage({ params }: UserPageProps) {
+export default async function UserPage({ 
+  params 
+}: { 
+  params: { id: string } 
+}) {
   const session = await auth.api.getSession({
     headers: await headers()
   });

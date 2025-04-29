@@ -8,13 +8,11 @@ import { reactToPost } from "@/actions/posts"
 import { reactToComment } from "@/actions/comments"
 import { headers } from "next/headers"
 
-interface PostPageProps {
-  params: {
-    id: string
-  }
-}
-
-export default async function PostPage({ params }: PostPageProps) {
+export default async function PostPage({ 
+  params 
+}: { 
+  params: { id: string } 
+}) {
   const session = await auth.api.getSession({
     headers: await headers()
   });

@@ -91,17 +91,55 @@ export function UserProfile({
     try {
       setUpdatingImage(true)
       
-      // Convert image to base64
-      const reader = new FileReader()
-      reader.readAsDataURL(file)
+      // First read the file to create an image for resizing
+      const firstReader = new FileReader()
+      firstReader.readAsDataURL(file)
       
-      reader.onload = async () => {
+      firstReader.onload = async () => {
         try {
-          const base64Image = reader.result as string
+          // Create an image element to get dimensions
+          const img = new Image()
+          img.src = firstReader.result as string
+          
+          await new Promise((resolve) => {
+            img.onload = resolve
+          })
+          
+          // Resize the image to a reasonable profile picture size
+          const MAX_WIDTH = 200
+          const MAX_HEIGHT = 200
+          
+          // Calculate new dimensions while maintaining aspect ratio
+          let width = img.width
+          let height = img.height
+          
+          if (width > height) {
+            if (width > MAX_WIDTH) {
+              height = Math.round(height * (MAX_WIDTH / width))
+              width = MAX_WIDTH
+            }
+          } else {
+            if (height > MAX_HEIGHT) {
+              width = Math.round(width * (MAX_HEIGHT / height))
+              height = MAX_HEIGHT
+            }
+          }
+          
+          // Create canvas for resizing
+          const canvas = document.createElement('canvas')
+          canvas.width = width
+          canvas.height = height
+          
+          // Draw resized image to canvas
+          const ctx = canvas.getContext('2d')
+          ctx?.drawImage(img, 0, 0, width, height)
+          
+          // Get the resized image as base64 with reduced quality
+          const resizedBase64 = canvas.toDataURL('image/jpeg', 0.85)
           
           // Update user profile image using Better Auth client
           await authClient.updateUser({
-            image: base64Image
+            image: resizedBase64
           })
           
           toast.success('Profile image updated successfully')
@@ -115,7 +153,7 @@ export function UserProfile({
         }
       }
       
-      reader.onerror = () => {
+      firstReader.onerror = () => {
         toast.error('Failed to read image file')
         setUpdatingImage(false)
       }

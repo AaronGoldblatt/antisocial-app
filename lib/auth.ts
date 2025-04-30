@@ -14,6 +14,18 @@ export const auth = betterAuth({
     session: {
         cookieCache: {
             enabled: false
+        },
+        // Add transformer to remove image from session data
+        transformer: {
+            serialize: (user) => {
+                // Remove the image field from session to prevent large cookies
+                if (user && typeof user === 'object' && 'image' in user) {
+                    const { image, ...userWithoutImage } = user;
+                    return userWithoutImage;
+                }
+                return user;
+            },
+            deserialize: (data) => data
         }
     },
     emailAndPassword: {

@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, FormEvent } from "react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
 import Image from "next/image"
@@ -13,21 +13,44 @@ import { Loader2, Search, User, FileText } from "lucide-react"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 
+// Define types for the data structures
+interface PostUser {
+  id: string
+  image: string | null
+  name: string
+  createdAt: Date
+  updatedAt: Date
+  email: string
+  emailVerified: boolean
+}
+
+interface Post {
+  id: string
+  content: string
+  imageUrl: string | null
+  createdAt: Date
+  updatedAt: Date
+  userId: string
+  user: PostUser
+}
+
 export default function SearchPage() {
   const router = useRouter()
   const [query, setQuery] = useState("")
   const [loading, setLoading] = useState(false)
-  const [posts, setPosts] = useState([])
-  const [users, setUsers] = useState([])
+  const [posts, setPosts] = useState<Post[]>([])
+  const [users, setUsers] = useState<PostUser[]>([])
   const [error, setError] = useState("")
   const [activeTab, setActiveTab] = useState("all")
+  const [hasSearched, setHasSearched] = useState(false)
 
-  const handleSearch = async (e) => {
+  const handleSearch = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     if (!query.trim()) return
     
     setLoading(true)
     setError("")
+    setHasSearched(true)
     
     try {
       const result = await search({ query })
@@ -149,9 +172,15 @@ export default function SearchPage() {
             </Tabs>
           )}
           
-          {!loading && query && posts.length === 0 && users.length === 0 && !error && (
+          {!loading && hasSearched && query && posts.length === 0 && users.length === 0 && !error && (
             <div className="text-center py-8 text-muted-foreground">
               No results found for "{query}"
+            </div>
+          )}
+          
+          {!hasSearched && query && (
+            <div className="text-center py-8 text-muted-foreground">
+              Press Enter to search
             </div>
           )}
           
@@ -171,7 +200,7 @@ export default function SearchPage() {
 }
 
 // User Card Component
-function UserCard({ user }) {
+function UserCard({ user }: { user: PostUser }) {
   return (
     <Card>
       <CardHeader className="flex flex-row items-center gap-4 pb-2">
@@ -196,7 +225,7 @@ function UserCard({ user }) {
 }
 
 // Post Card Component
-function PostCard({ post }) {
+function PostCard({ post }: { post: Post }) {
   return (
     <Card>
       <CardHeader>

@@ -11,7 +11,7 @@ export function DetailedThumbsUp({ size = 16, className = "" }: DetailedThumbsUp
   
   return (
     <div 
-      className={`flex items-center justify-center super-dislike-icon ${className}`} 
+      className={`flex items-center justify-center ${className}`} 
       style={{ 
         width: size, 
         height: size, 

@@ -2,11 +2,17 @@ import { redirect } from "next/navigation"
 import { auth } from "@/lib/auth"
 import { PostList } from "@/components/PostList"
 import { CreatePost } from "@/components/CreatePost"
+import { FeedSortControls } from "@/components/FeedSortControls"
 import { getFeedPosts } from "@/actions/posts"
 import { reactToPost } from "@/actions/posts"
 import { headers } from "next/headers"
+import { SortOption } from "@/components/SortDropdown"
 
-export default async function Home() {
+type HomeProps = {
+  searchParams: { [key: string]: string | string[] | undefined }
+}
+
+export default async function Home({ searchParams }: HomeProps) {
   // Check if user is authenticated
   const session = await auth.api.getSession({
     headers: await headers()
@@ -17,8 +23,11 @@ export default async function Home() {
     redirect("/auth/sign-in")
   }
 
-  // Get feed posts
-  const posts = await getFeedPosts()
+  // Get sort parameter from URL or use default
+  const sortBy = (searchParams.sort as SortOption) || "most-disliked"
+
+  // Get feed posts with specified sort
+  const posts = await getFeedPosts(sortBy)
 
   return (
     <div style={{ display: "flex", justifyContent: "center", width: "100%", margin: "0 auto" }}>
@@ -27,6 +36,8 @@ export default async function Home() {
           <h1 className="text-3xl font-bold">Your Feed</h1>
           
           <CreatePost />
+          
+          <FeedSortControls />
           
           <div className="flex flex-col gap-4">
             <PostList 

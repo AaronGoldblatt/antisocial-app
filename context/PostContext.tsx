@@ -1,8 +1,9 @@
 "use client"
 
-import { createContext, useContext, useState, ReactNode } from "react"
+import { createContext, useContext, useState, ReactNode, useCallback, useMemo } from "react"
 import { Post, ReactionType } from "@/database/schema/social"
 import { User } from "next-auth"
+import { SortOption } from "@/components/SortDropdown"
 
 // Define the shape of a post with all its properties
 export type ExtendedPost = Post & {
@@ -25,6 +26,8 @@ interface PostContextType {
   setPosts: (posts: ExtendedPost[]) => void
   addPost: (post: ExtendedPost) => void
   updatePostReaction: (postId: string, type: string) => void
+  sortOption: SortOption
+  setSortOption: (option: SortOption) => void
 }
 
 // Create the context with a default value
@@ -34,6 +37,7 @@ const PostContext = createContext<PostContextType | undefined>(undefined)
 export function PostProvider({ children, initialPosts = [] }: { children: ReactNode, initialPosts?: ExtendedPost[] }) {
   const [posts, setPosts] = useState<ExtendedPost[]>(initialPosts)
   const [newPosts, setNewPosts] = useState<ExtendedPost[]>([])
+  const [sortOption, setSortOption] = useState<SortOption>("most-disliked")
 
   // Add a new post to the beginning of the list and mark it as newly created
   const addPost = (post: ExtendedPost) => {
@@ -44,10 +48,56 @@ export function PostProvider({ children, initialPosts = [] }: { children: ReactN
     setNewPosts(current => [postWithFlag, ...current])
   }
 
+  // Function to sort posts based on the selected option
+  const sortPosts = useCallback((postsToSort: ExtendedPost[]): ExtendedPost[] => {
+    if (!postsToSort.length) return postsToSort
+
+    const sorted = [...postsToSort]
+    
+    switch (sortOption) {
+      case "most-disliked":
+        // Sort by total dislikes (dislike count + 2*super_dislike count)
+        return sorted.sort((a, b) => {
+          const aDislikeScore = (a._count?.reactions.dislike || 0) + 2 * (a._count?.reactions.superDislike || 0)
+          const bDislikeScore = (b._count?.reactions.dislike || 0) + 2 * (b._count?.reactions.superDislike || 0)
+          return bDislikeScore - aDislikeScore
+        })
+      
+      case "least-disliked":
+        // Sort by inverse of total dislikes
+        return sorted.sort((a, b) => {
+          const aDislikeScore = (a._count?.reactions.dislike || 0) + 2 * (a._count?.reactions.superDislike || 0)
+          const bDislikeScore = (b._count?.reactions.dislike || 0) + 2 * (b._count?.reactions.superDislike || 0)
+          return aDislikeScore - bDislikeScore
+        })
+      
+      case "newest":
+        // Sort by creation date (newest first)
+        return sorted.sort((a, b) => 
+          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+        )
+      
+      case "oldest":
+        // Sort by creation date (oldest first)
+        return sorted.sort((a, b) => 
+          new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+        )
+      
+      default:
+        return sorted
+    }
+  }, [sortOption])
+
+  // Apply sorting to regular posts
+  const sortedPosts = useMemo(() => 
+    sortPosts(posts), [posts, sortPosts]
+  )
+
   // Get the combined posts (new posts at the top, followed by sorted posts)
-  const combinedPosts = [...newPosts, ...posts.filter(post => 
-    !newPosts.some(newPost => newPost.id === post.id)
-  )]
+  const combinedPosts = useMemo(() => [
+    ...newPosts, 
+    ...sortedPosts.filter(post => !newPosts.some(newPost => newPost.id === post.id))
+  ], [newPosts, sortedPosts])
 
   // Update a post's reaction
   const updatePostReaction = (postId: string, type: string) => {
@@ -115,7 +165,9 @@ export function PostProvider({ children, initialPosts = [] }: { children: ReactN
       posts: combinedPosts, 
       setPosts, 
       addPost, 
-      updatePostReaction 
+      updatePostReaction,
+      sortOption,
+      setSortOption
     }}>
       {children}
     </PostContext.Provider>

@@ -2,18 +2,21 @@ import { notFound, redirect } from "next/navigation"
 import { auth } from "@/auth"
 import { PostList } from "@/components/PostList"
 import { UserProfile } from "@/components/UserProfile"
+import { FeedSortControls } from "@/components/FeedSortControls"
 import { getUserProfile } from "@/actions/users"
 import { getUserPosts, reactToPost } from "@/actions/posts"
 import { headers } from "next/headers"
+import { SortOption } from "@/components/SortDropdown"
 
 type UserPageProps = {
-  params: Promise<{
+  params: {
     id: string
-  }>
+  }
+  searchParams: { [key: string]: string | string[] | undefined }
 }
 
-export default async function UserPage({ params }: UserPageProps) {
-  const { id } = await params;
+export default async function UserPage({ params, searchParams }: UserPageProps) {
+  const { id } = params;
   
   const session = await auth.api.getSession({
     headers: await headers()
@@ -24,10 +27,13 @@ export default async function UserPage({ params }: UserPageProps) {
     redirect("/auth/sign-in")
   }
 
+  // Get sort parameter from URL or use default
+  const sortBy = (searchParams.sort as SortOption) || "most-disliked"
+
   try {
     const [userProfile, userPosts] = await Promise.all([
       getUserProfile(id),
-      getUserPosts(id)
+      getUserPosts(id, sortBy)
     ])
 
     return (
@@ -44,7 +50,10 @@ export default async function UserPage({ params }: UserPageProps) {
             />
             
             <div className="border-t pt-6">
-              <h2 className="mb-4 text-xl font-bold">Rants</h2>
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="text-xl font-bold">Rants</h2>
+                <FeedSortControls />
+              </div>
               
               <PostList 
                 initialPosts={userPosts} 

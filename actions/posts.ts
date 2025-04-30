@@ -56,7 +56,7 @@ export async function createPost(data: Pick<NewPost, "content" | "imageUrl">) {
 }
 
 // Get posts for the feed (showing all posts except the user's own, sorted by dislikes)
-export async function getFeedPosts() {
+export async function getFeedPosts(sortBy: string = "most-disliked") {
   const session = await auth.api.getSession({
     headers: await headers()
   });
@@ -66,18 +66,7 @@ export async function getFeedPosts() {
 
   // Query posts with user info
   const feedPosts = await db.query.posts.findMany({
-    orderBy: [
-      // Sort by (dislike + 2*super_dislike) first, then by creation date (newest first)
-      desc(sql.raw(`
-        (SELECT COUNT(*) FROM "reactions" 
-         WHERE "reactions"."post_id" = "posts"."id" 
-         AND "reactions"."type" = 'dislike')
-        + 2 * (SELECT COUNT(*) FROM "reactions" 
-         WHERE "reactions"."post_id" = "posts"."id" 
-         AND "reactions"."type" = 'super_dislike')
-      `)),
-      desc(posts.createdAt)
-    ],
+    orderBy: getSortingOrder(sortBy),
     with: {
       user: true
     }
@@ -125,25 +114,14 @@ export async function getFeedPosts() {
 }
 
 // Get posts for a specific user
-export async function getUserPosts(userId: string) {
+export async function getUserPosts(userId: string, sortBy: string = "most-disliked") {
   const session = await auth.api.getSession({
     headers: await headers()
   });
   
   const userPosts = await db.query.posts.findMany({
     where: eq(posts.userId, userId),
-    orderBy: [
-      // Sort by (dislike + 2*super_dislike) first, then by creation date
-      desc(sql.raw(`
-        (SELECT COUNT(*) FROM "reactions" 
-         WHERE "reactions"."post_id" = "posts"."id" 
-         AND "reactions"."type" = 'dislike')
-        + 2 * (SELECT COUNT(*) FROM "reactions" 
-         WHERE "reactions"."post_id" = "posts"."id" 
-         AND "reactions"."type" = 'super_dislike')
-      `)),
-      desc(posts.createdAt)
-    ],
+    orderBy: getSortingOrder(sortBy),
     with: {
       user: true
     }
@@ -482,4 +460,56 @@ export async function countNewFollowingPosts(since: Date) {
     ));
 
   return newPostsCount[0].count;
+}
+
+// Helper function to get the correct sort order based on the sort option
+function getSortingOrder(sortBy: string) {
+  switch (sortBy) {
+    case "most-disliked":
+      return [
+        // Sort by (dislike + 2*super_dislike) first, then by creation date (newest first)
+        desc(sql.raw(`
+          (SELECT COUNT(*) FROM "reactions" 
+           WHERE "reactions"."post_id" = "posts"."id" 
+           AND "reactions"."type" = 'dislike')
+          + 2 * (SELECT COUNT(*) FROM "reactions" 
+           WHERE "reactions"."post_id" = "posts"."id" 
+           AND "reactions"."type" = 'super_dislike')
+        `)),
+        desc(posts.createdAt)
+      ]
+    
+    case "least-disliked":
+      return [
+        // Sort by (dislike + 2*super_dislike) ascending, then by creation date (newest first)
+        sql.raw(`
+          (SELECT COUNT(*) FROM "reactions" 
+           WHERE "reactions"."post_id" = "posts"."id" 
+           AND "reactions"."type" = 'dislike')
+          + 2 * (SELECT COUNT(*) FROM "reactions" 
+           WHERE "reactions"."post_id" = "posts"."id" 
+           AND "reactions"."type" = 'super_dislike')
+        `),
+        desc(posts.createdAt)
+      ]
+    
+    case "newest":
+      return [desc(posts.createdAt)]
+    
+    case "oldest":
+      return [posts.createdAt]
+    
+    default:
+      return [
+        desc(sql.raw(`
+          (SELECT COUNT(*) FROM "reactions" 
+           WHERE "reactions"."post_id" = "posts"."id" 
+           AND "reactions"."type" = 'dislike')
+          + 2 * (SELECT COUNT(*) FROM "reactions" 
+           WHERE "reactions"."post_id" = "posts"."id" 
+           AND "reactions"."type" = 'super_dislike')
+        `)),
+        desc(posts.createdAt)
+      ]
+  }
 } 

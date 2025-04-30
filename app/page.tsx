@@ -13,8 +13,10 @@ const DEFAULT_SORT: SortOption = "most-disliked";
 
 // Page component
 export default async function Home({
+  params = {},
   searchParams,
 }: {
+  params?: {};
   searchParams: {
     sort?: string;
     following?: string;

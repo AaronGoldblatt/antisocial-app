@@ -62,8 +62,11 @@ export function PostItem({ post, onReaction }: PostItemProps) {
     if (isLoading) return;
     setIsLoading(true);
     
-    // Set which button was clicked for animation
-    setClickedButton(type);
+    // Only set clicked button for animation if this is a new reaction or different from existing
+    // Don't animate if removing a reaction (clicking the same reaction type again)
+    if (post.userReaction !== type) {
+      setClickedButton(type);
+    }
     
     try {
       await onReaction(post.id, type);

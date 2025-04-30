@@ -4,31 +4,18 @@ import { PostList } from "@/components/PostList"
 import { CreatePost } from "@/components/CreatePost"
 import { getFeedPosts, getFollowingPosts } from "@/actions/posts"
 import { reactToPost } from "@/actions/posts"
-import { cookies } from "next/headers"
+import { headers } from "next/headers"
 import { SortOption } from "@/components/SortDropdown"
 import { FeedControls } from "@/components/FeedControls"
 
-// Define default values
-const DEFAULT_SORT: SortOption = "most-disliked";
+type HomeProps = {
+  searchParams: { [key: string]: string | string[] | undefined }
+}
 
-// Page component
-export default async function Home({
-  params = {},
-  searchParams,
-}: {
-  params?: {};
-  searchParams: {
-    sort?: string;
-    following?: string;
-  };
-}) {
-  // Create a minimal headers object with just the cookie
-  // This satisfies the BetterAuth requirement
-  const cookieHeader = cookies().toString();
+export default async function Home({ searchParams }: HomeProps) {
+  // Check if user is authenticated
   const session = await auth.api.getSession({
-    headers: {
-      cookie: cookieHeader
-    } as any
+    headers: await headers()
   });
   
   // Redirect to login if not authenticated
@@ -36,17 +23,16 @@ export default async function Home({
     redirect("/auth/sign-in")
   }
 
-  // Get parameters safely with explicit destructuring
-  const { sort: sortParam = DEFAULT_SORT, following: followingParam = 'false' } = searchParams;
+  // Get sort parameter from URL or use default
+  const sortBy = (searchParams.sort as SortOption) || "most-disliked"
   
-  // Set typing and defaults
-  const sort = sortParam as SortOption;
-  const following = followingParam === 'true';
+  // Get following filter from URL
+  const showFollowing = searchParams.following === 'true'
 
-  // Get posts based on filter
-  const posts = following 
-    ? await getFollowingPosts(sort) 
-    : await getFeedPosts(sort)
+  // Get posts based on filter - either all feed posts or just following posts
+  const posts = showFollowing 
+    ? await getFollowingPosts(sortBy) 
+    : await getFeedPosts(sortBy)
 
   return (
     <div style={{ display: "flex", justifyContent: "center", width: "100%", margin: "0 auto" }}>

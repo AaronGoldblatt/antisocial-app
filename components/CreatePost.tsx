@@ -6,11 +6,13 @@ import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import { createPost } from "@/actions/posts"
 import { toast } from "sonner"
+import { usePostContext } from "@/context/PostContext"
 
 export function CreatePost() {
   const [content, setContent] = useState("")
   const [isLoading, setIsLoading] = useState(false)
   const router = useRouter()
+  const { addPost } = usePostContext()
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -22,9 +24,17 @@ export function CreatePost() {
     
     setIsLoading(true)
     try {
-      await createPost({ content })
+      const newPost = await createPost({ content })
       setContent("")
       toast.success("Post created!")
+      
+      // Add the new post to the context to display at the top of the feed
+      if (newPost) {
+        addPost(newPost)
+      }
+      
+      // Still refresh the router for server state consistency,
+      // but the new post will stay at the top until a full page refresh
       router.refresh()
     } catch (error) {
       toast.error("Failed to create post")

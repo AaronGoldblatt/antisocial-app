@@ -5,10 +5,12 @@ import { createPost } from "@/actions/posts"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import { toast } from "sonner"
+import { usePostContext } from "@/context/PostContext"
 
 export function WelcomeCreatePost() {
   const [content, setContent] = useState("")
   const [isLoading, setIsLoading] = useState(false)
+  const { addPost } = usePostContext()
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -20,10 +22,15 @@ export function WelcomeCreatePost() {
     
     setIsLoading(true)
     try {
-      await createPost({ content })
+      const newPost = await createPost({ content })
       
       // Set cookie to indicate user has posted this session
       document.cookie = "has_posted_this_session=true; path=/;"
+      
+      // Add the new post to the context so it appears at the top of the feed
+      if (newPost) {
+        addPost(newPost)
+      }
       
       setContent("")
       toast.success("Post created! You may now use the site.")

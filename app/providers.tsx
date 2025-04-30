@@ -9,6 +9,7 @@ import type { ReactNode } from "react"
 import { Toaster, toast } from "sonner"
 
 import { authClient } from "@/lib/auth-client"
+import { PostProvider } from "@/context/PostContext"
 
 function makeQueryClient() {
     return new QueryClient({
@@ -62,9 +63,11 @@ export function Providers({ children }: { children: ReactNode }) {
                     onSessionChange={router.refresh}
                     LinkComponent={Link}
                 >
-                    {children}
+                    <PostProvider>
+                        {children}
 
-                    <Toaster />
+                        <Toaster />
+                    </PostProvider>
                 </AuthUIProviderTanstack>
             </AuthQueryProvider>
         </QueryClientProvider>

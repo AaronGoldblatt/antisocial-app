@@ -12,24 +12,10 @@ import { Button } from "@/components/ui/button"
 import { DetailedThumbsUp } from "./DetailedThumbsUp"
 import { DetailedThumbsDown } from "./DetailedThumbsDown"
 import { MiddleFinger } from "./MiddleFinger"
+import { ExtendedPost } from "@/context/PostContext"
 
 interface PostItemProps {
-  post: Post & {
-    user: {
-      id: string;
-      name?: string | null;
-      image?: string | null;
-    }
-    _count?: {
-      comments: number
-      reactions: {
-        like: number
-        dislike: number
-        superDislike: number
-      }
-    }
-    userReaction?: string | null
-  }
+  post: ExtendedPost
   onReaction: (postId: string, type: string) => void
 }
 
@@ -76,7 +62,10 @@ export function PostItem({ post, onReaction }: PostItemProps) {
   }
 
   return (
-    <div className="flex flex-col gap-3 rounded-lg border p-4 shadow-sm">
+    <div className={cn(
+      "flex flex-col gap-3 rounded-lg border p-4 shadow-sm",
+      post.isNewlyCreated && "border-blue-300 bg-blue-50 dark:border-blue-800 dark:bg-blue-950/30 animate-pulse-gentle"
+    )}>
       <div className="flex items-center gap-3">
         {post.user.image ? (
           <Image

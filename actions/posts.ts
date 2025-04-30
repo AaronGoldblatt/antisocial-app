@@ -25,8 +25,34 @@ export async function createPost(data: Pick<NewPost, "content" | "imageUrl">) {
     userId: session.user.id
   }).returning()
 
+  // Get the complete post with user info
+  const postWithUser = await db.query.posts.findFirst({
+    where: eq(posts.id, newPost[0].id),
+    with: {
+      user: true
+    }
+  })
+
+  if (!postWithUser) {
+    throw new Error("Failed to retrieve created post")
+  }
+
+  // Set up the complete post with counts
+  const completePost = {
+    ...postWithUser,
+    _count: {
+      comments: 0,
+      reactions: {
+        like: 0,
+        dislike: 0,
+        superDislike: 0
+      }
+    },
+    userReaction: null
+  }
+  
   revalidatePath("/")
-  return newPost[0]
+  return completePost
 }
 
 // Get posts for the feed (showing all posts except the user's own, sorted by dislikes)

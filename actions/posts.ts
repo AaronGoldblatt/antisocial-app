@@ -38,9 +38,8 @@ export async function getFeedPosts() {
     throw new Error("Not authenticated")
   }
 
-  // Query posts with user info, excluding current user's posts
+  // Query posts with user info
   const feedPosts = await db.query.posts.findMany({
-    where: not(eq(posts.userId, session.user.id)),
     orderBy: [
       // Sort by (dislike + 2*super_dislike) first, then by creation date (newest first)
       desc(sql.raw(`

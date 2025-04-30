@@ -48,7 +48,7 @@ export function Header({ user }: HeaderProps) {
           <div className="flex items-center gap-6">
             <Link
               href="/"
-              className={cn("font-bold text-xl", showNav && "hidden sm:inline-block")}
+              className="font-bold text-xl"
             >
               <Image
                 src="/banner.png"

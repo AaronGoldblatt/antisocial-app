@@ -673,3 +673,147 @@ button:not(:disabled),
     box-shadow: 0 0 0 0 rgba(255, 51, 0, 0);
   }
 }
+
+/*********************************************
+ * RESPONSIVE MOBILE STYLES - DO NOT MODIFY
+ *********************************************/
+
+/* Mobile responsive header */
+@media (max-width: 767px) {
+  /* Header styles */
+  header > div {
+    display: flex !important;
+    justify-content: flex-start !important;
+    width: 100% !important;
+    margin: 0 auto !important;
+    padding: 0 !important;
+  }
+  
+  header > div > div {
+    flex-direction: column !important;
+    height: auto !important;
+    align-items: center !important;
+    padding: 0.75rem 1rem !important;
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+  
+  header > div > div > div:first-child {
+    flex-direction: column !important;
+    width: 100% !important;
+    align-items: center !important;
+    margin-bottom: 0.5rem !important;
+    gap: 0.5rem !important;
+  }
+  
+  header a.font-bold.text-xl {
+    margin-bottom: 0.5rem !important;
+  }
+  
+  header nav {
+    justify-content: center !important;
+    width: 100% !important;
+    margin-top: 0.5rem !important;
+    gap: 1rem !important;
+  }
+}
+
+/* Content layouts for all pages */
+@media (max-width: 767px) {
+  /* Main content container */
+  div[style*="display: flex"][style*="justify-content: center"][style*="width: 100%"][style*="margin: 0 auto"] {
+    padding: 0 !important;
+  }
+  
+  /* Main content area */
+  main[style*="width: 65%"][style*="max-width: 850px"] {
+    width: 100% !important;
+    max-width: 100% !important;
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+  }
+  
+  /* All posts and cards */
+  .rounded-lg, .rounded-md, .border, .card {
+    width: 100% !important;
+  }
+  
+  /* Post and comment sections */
+  .post-content, .comment-content {
+    padding: 10px !important;
+  }
+  
+  /* Fix any fixed width elements */
+  [style*="width:"][style*="px"],
+  [style*="width: "][style*="px"],
+  [style*="max-width:"][style*="px"],
+  [style*="max-width: "][style*="px"] {
+    max-width: 100% !important;
+    width: auto !important;
+  }
+  
+  /* Fix any grids */
+  .grid.grid-cols-2,
+  .grid.grid-cols-3,
+  .grid.grid-cols-4 {
+    grid-template-columns: 1fr !important;
+  }
+  
+  .grid.sm\:grid-cols-2,
+  .grid.sm\:grid-cols-3,
+  .grid.sm\:grid-cols-4 {
+    grid-template-columns: 1fr !important;
+  }
+  
+  /* Adjust form elements */
+  form.flex.flex-col.gap-3 {
+    width: 100% !important;
+  }
+  
+  textarea, input {
+    width: 100% !important;
+  }
+  
+  /* Adjust tab layouts */
+  [role="tablist"] button,
+  .tabs-list button,
+  div[role="tablist"],
+  [data-orientation="horizontal"] {
+    padding: 0.5rem !important;
+    font-size: 0.875rem !important;
+  }
+  
+  /* Page headings */
+  h1.text-3xl, h1.text-4xl {
+    font-size: 1.75rem !important;
+    line-height: 2rem !important;
+    text-align: center !important;
+    margin-bottom: 1rem !important;
+  }
+  
+  /* Buttons and interactive elements - make them bigger on mobile */
+  button, 
+  [role="button"],
+  a.rounded-md,
+  a.rounded-lg {
+    min-height: 44px !important; /* For better touch targets */
+  }
+  
+  /* Ensure proper spacing around form controls */
+  .gap-4, .gap-6 {
+    gap: 0.5rem !important;
+  }
+  
+  .p-4, .p-6 {
+    padding: 0.75rem !important;
+  }
+  
+  /* Fix any flex layouts that might break on mobile */
+  .flex.flex-row {
+    flex-direction: column !important;
+  }
+  
+  .flex.sm\:flex-row {
+    flex-direction: column !important;
+  }
+}

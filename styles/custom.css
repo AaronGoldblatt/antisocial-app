@@ -898,19 +898,138 @@ main[style*="width: 65%"][style*="max-width: 850px"] {
     gap: 8px !important;
   }
   
-  /* Make each reaction button full width */
+  /* Make each reaction button full width and larger */
   .flex.gap-2.pt-2 > button {
     width: 100% !important;
     justify-content: flex-start !important;
     margin: 0 !important;
-    height: 44px !important;
+    height: 50px !important;
+    padding: 0 15px !important;
+    border-radius: 10px !important;
+    background-color: rgba(30, 30, 30, 0.6) !important;
   }
   
   /* Ensure icon and text are properly sized and aligned */
   .flex.gap-2.pt-2 > button > div,
   .flex.gap-2.pt-2 > button > svg {
-    width: 30px !important;
-    height: 30px !important;
-    margin-right: 10px !important;
+    width: 36px !important;
+    height: 36px !important;
+    margin-right: 15px !important;
+    font-size: 26px !important;
   }
+  
+  /* Make the thumb counts more visible */
+  .flex.gap-2.pt-2 > button > span {
+    font-size: 18px !important;
+    font-weight: bold !important;
+  }
+}
+
+/* User profile image update styling */
+.relative.h-24.w-24.overflow-hidden.rounded-full:has(> .absolute.bottom-0.right-0) {
+  transition: all 0.3s ease !important;
+  border: 2px solid #FF6600 !important;
+  box-shadow: 0 0 20px rgba(255, 102, 0, 0.3) !important;
+}
+
+.relative.h-24.w-24.overflow-hidden.rounded-full:has(> .absolute.bottom-0.right-0):hover {
+  transform: scale(1.05) !important;
+  border-color: #FF6600 !important;
+  box-shadow: 0 0 30px rgba(255, 102, 0, 0.6) !important;
+}
+
+.relative.h-24.w-24.overflow-hidden.rounded-full:has(> .absolute.bottom-0.right-0)::before {
+  content: "" !important;
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  background: radial-gradient(circle at center, rgba(255, 102, 0, 0.1), transparent 70%) !important;
+  opacity: 0 !important;
+  transition: opacity 0.3s ease !important;
+  z-index: 1 !important;
+}
+
+.relative.h-24.w-24.overflow-hidden.rounded-full:has(> .absolute.bottom-0.right-0):hover::before {
+  opacity: 1 !important;
+}
+
+.absolute.bottom-0.right-0.rounded-full.bg-black\/60.p-1 {
+  transition: all 0.3s ease !important;
+  z-index: 2 !important;
+}
+
+.relative.h-24.w-24.overflow-hidden.rounded-full:hover .absolute.bottom-0.right-0.rounded-full.bg-black\/60.p-1 {
+  background-color: #FF6600 !important;
+  box-shadow: 0 0 10px rgba(255, 102, 0, 0.8) !important;
+}
+
+.absolute.inset-0.z-10.flex.items-center.justify-center.bg-black\/50 {
+  animation: fadeIn 0.3s ease-in-out !important;
+}
+
+.h-8.w-8.animate-spin.rounded-full.border-b-2.border-orange-500 {
+  animation: spin 1s linear infinite !important;
+}
+
+/* Profile edit options popup */
+.absolute.left-0.right-0.top-full.mt-2.flex.flex-col.gap-2.rounded-md.border.border-gray-700.bg-black.p-3.shadow-lg {
+  animation: slideDown 0.3s ease-out forwards !important;
+  z-index: 10 !important;
+  border-color: #333333 !important;
+  background-color: rgba(17, 17, 17, 0.95) !important;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.5), 0 0 15px rgba(255, 102, 0, 0.3) !important;
+  width: 150px !important;
+}
+
+.flex.items-center.gap-2.rounded-md.bg-orange-800.px-3.py-2.text-sm.text-white.hover\:bg-orange-700 {
+  background-color: rgba(255, 102, 0, 0.3) !important;
+  border: 1px solid #FF6600 !important;
+  transition: all 0.2s ease !important;
+}
+
+.flex.items-center.gap-2.rounded-md.bg-orange-800.px-3.py-2.text-sm.text-white.hover\:bg-orange-700:hover {
+  background-color: rgba(255, 102, 0, 0.5) !important;
+  transform: translateY(-1px) !important;
+  box-shadow: 0 3px 10px rgba(255, 102, 0, 0.3) !important;
+}
+
+.flex.items-center.gap-2.rounded-md.bg-orange-800.px-3.py-2.text-sm.text-white.hover\:bg-orange-700:disabled {
+  opacity: 0.5 !important;
+  cursor: not-allowed !important;
+  background-color: rgba(255, 102, 0, 0.2) !important;
+}
+
+.flex.items-center.gap-2.rounded-md.border.border-gray-600.px-3.py-2.text-sm.text-white.hover\:bg-gray-800 {
+  background-color: rgba(50, 50, 50, 0.5) !important;
+  border-color: #444444 !important;
+  transition: all 0.2s ease !important;
+}
+
+.flex.items-center.gap-2.rounded-md.border.border-gray-600.px-3.py-2.text-sm.text-white.hover\:bg-gray-800:hover {
+  background-color: rgba(80, 80, 80, 0.5) !important;
+  border-color: #666666 !important;
+  transform: translateY(-1px) !important;
+}
+
+@keyframes slideDown {
+  from { 
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to { 
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }

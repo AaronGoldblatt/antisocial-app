@@ -1,11 +1,12 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useRef } from "react"
 import Image from "next/image"
 import { followUser, unfollowUser } from "@/actions/users"
 import { Button } from "@/components/ui/button"
 import { toast } from "sonner"
 import { useRouter } from "next/navigation"
+import { authClient } from "@/lib/auth-client"
 
 interface UserProfileProps {
   user: {
@@ -30,6 +31,9 @@ export function UserProfile({
 }: UserProfileProps) {
   const [following, setFollowing] = useState(isFollowing)
   const [isLoading, setIsLoading] = useState(false)
+  const [updatingImage, setUpdatingImage] = useState(false)
+  const [showEditOptions, setShowEditOptions] = useState(false)
+  const fileInputRef = useRef<HTMLInputElement>(null)
   const router = useRouter()
 
   const handleFollowToggle = async () => {
@@ -54,24 +58,158 @@ export function UserProfile({
     }
   }
 
+  const handleProfileImageClick = () => {
+    if (isCurrentUser) {
+      setShowEditOptions(true)
+    }
+  }
+
+  const handleFileSelect = () => {
+    fileInputRef.current?.click()
+  }
+
+  const handleCancel = () => {
+    setShowEditOptions(false)
+  }
+
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+
+    // Validate file type
+    if (!file.type.startsWith('image/')) {
+      toast.error('Please select an image file')
+      return
+    }
+
+    // Validate file size (max 5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error('Image file size must be less than 5MB')
+      return
+    }
+
+    try {
+      setUpdatingImage(true)
+      
+      // Convert image to base64
+      const reader = new FileReader()
+      reader.readAsDataURL(file)
+      
+      reader.onload = async () => {
+        try {
+          const base64Image = reader.result as string
+          
+          // Update user profile image using Better Auth client
+          await authClient.updateUser({
+            image: base64Image
+          })
+          
+          toast.success('Profile image updated successfully')
+          setShowEditOptions(false)
+          router.refresh() // Refresh the page to show the updated image
+        } catch (error) {
+          console.error('Error updating profile image:', error)
+          toast.error('Failed to update profile image')
+        } finally {
+          setUpdatingImage(false)
+        }
+      }
+      
+      reader.onerror = () => {
+        toast.error('Failed to read image file')
+        setUpdatingImage(false)
+      }
+    } catch (error) {
+      console.error('Error processing image:', error)
+      toast.error('Failed to update profile image')
+      setUpdatingImage(false)
+    }
+  }
+
   return (
     <div className="flex flex-col gap-6">
       <div className="flex flex-wrap items-center gap-4 sm:flex-nowrap">
-        <div className="relative h-24 w-24 overflow-hidden rounded-full">
-          {user.image ? (
-            <Image 
-              src={user.image} 
-              alt={user.name || "Profile"} 
-              fill 
-              className="object-cover" 
-              priority
-            />
-          ) : (
-            <div className="flex h-full w-full items-center justify-center bg-muted text-2xl font-bold">
-              {user.name?.charAt(0) || "?"}
+        <div className="relative">
+          <div 
+            className={`relative h-24 w-24 overflow-hidden rounded-full ${isCurrentUser && !showEditOptions ? 'cursor-pointer hover:opacity-80' : ''}`}
+            onClick={!showEditOptions ? handleProfileImageClick : undefined}
+            title={isCurrentUser && !showEditOptions ? "Click to update profile image" : undefined}
+          >
+            {updatingImage && (
+              <div className="absolute inset-0 z-10 flex items-center justify-center bg-black/50">
+                <div className="h-8 w-8 animate-spin rounded-full border-b-2 border-orange-500"></div>
+              </div>
+            )}
+            
+            {user.image ? (
+              <Image 
+                src={user.image} 
+                alt={user.name || "Profile"} 
+                fill 
+                className="object-cover" 
+                priority
+              />
+            ) : (
+              <div className="flex h-full w-full items-center justify-center bg-muted text-2xl font-bold">
+                {user.name?.charAt(0) || "?"}
+              </div>
+            )}
+            
+            {isCurrentUser && !showEditOptions && (
+              <div className="absolute bottom-0 right-0 rounded-full bg-black/60 p-1">
+                <svg 
+                  xmlns="http://www.w3.org/2000/svg" 
+                  width="16" 
+                  height="16" 
+                  viewBox="0 0 24 24" 
+                  fill="none" 
+                  stroke="currentColor" 
+                  strokeWidth="2" 
+                  strokeLinecap="round" 
+                  strokeLinejoin="round"
+                >
+                  <path d="M12 20h9"></path>
+                  <path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
+                </svg>
+              </div>
+            )}
+          </div>
+          
+          {showEditOptions && isCurrentUser && (
+            <div className="absolute left-0 right-0 top-full mt-2 flex flex-col gap-2 rounded-md border border-gray-700 bg-black p-3 shadow-lg">
+              <button 
+                onClick={handleFileSelect}
+                className="flex items-center gap-2 rounded-md bg-orange-800 px-3 py-2 text-sm text-white hover:bg-orange-700"
+                disabled={updatingImage}
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                  <polyline points="17 8 12 3 7 8"></polyline>
+                  <line x1="12" y1="3" x2="12" y2="15"></line>
+                </svg>
+                Upload Image
+              </button>
+              <button 
+                onClick={handleCancel}
+                className="flex items-center gap-2 rounded-md border border-gray-600 px-3 py-2 text-sm text-white hover:bg-gray-800"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <line x1="18" y1="6" x2="6" y2="18"></line>
+                  <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+                Cancel
+              </button>
             </div>
           )}
         </div>
+        
+        <input 
+          type="file" 
+          ref={fileInputRef} 
+          className="hidden" 
+          accept="image/*"
+          onChange={handleFileChange}
+        />
         
         <div className="flex-1">
           <h1 className="text-2xl font-bold">{user.name}</h1>

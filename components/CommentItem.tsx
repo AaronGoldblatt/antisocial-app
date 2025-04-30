@@ -61,8 +61,11 @@ export function CommentItem({ comment, onReaction }: CommentItemProps) {
     if (isLoading) return;
     setIsLoading(true);
     
-    // Set which button was clicked for animation
-    setClickedButton(type);
+    // Only set clicked button for animation if this is a new reaction or different from existing
+    // Don't animate if removing a reaction (clicking the same reaction type again)
+    if (comment.userReaction !== type) {
+      setClickedButton(type);
+    }
     
     try {
       await onReaction(comment.id, type);
@@ -115,10 +118,10 @@ export function CommentItem({ comment, onReaction }: CommentItemProps) {
       <div className="flex gap-2 pt-1">
         <Button
           ref={dislikeButtonRef}
-          variant="ghost"
+          variant="outline"
           size="sm"
           className={cn(
-            "flex h-7 gap-1 px-2 text-xs",
+            "flex h-7 gap-1 items-center px-2",
             comment.userReaction === ReactionType.DISLIKE && "bg-orange-100 dark:bg-orange-900"
           )}
           onClick={() => handleReaction(ReactionType.DISLIKE)}
@@ -130,10 +133,10 @@ export function CommentItem({ comment, onReaction }: CommentItemProps) {
         </Button>
         <Button
           ref={superDislikeButtonRef}
-          variant="ghost"
+          variant="outline"
           size="sm"
           className={cn(
-            "flex h-7 gap-1 px-2 text-xs",
+            "flex h-7 gap-1 items-center px-2",
             comment.userReaction === ReactionType.SUPER_DISLIKE && "bg-red-100 dark:bg-red-900"
           )}
           onClick={() => handleReaction(ReactionType.SUPER_DISLIKE)}
@@ -145,18 +148,17 @@ export function CommentItem({ comment, onReaction }: CommentItemProps) {
         </Button>
         <Button
           ref={likeButtonRef}
-          variant="ghost"
+          variant="outline"
           size="sm"
           className={cn(
-            "flex h-6 gap-1 px-2 text-xs scale-90",
+            "flex h-7 gap-1 items-center px-2",
             comment.userReaction === ReactionType.LIKE && "bg-green-100 dark:bg-green-900"
           )}
           onClick={() => handleReaction(ReactionType.LIKE)}
           disabled={isLoading}
-          style={{ transform: "scale(0.85)" }}
           data-just-clicked={clickedButton === ReactionType.LIKE ? "true" : undefined}
         >
-          <DetailedThumbsUp size={14} />
+          <DetailedThumbsUp size={16} />
           <span>{comment._count?.reactions.like || 0}</span>
         </Button>
       </div>

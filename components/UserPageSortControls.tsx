@@ -1,14 +1,15 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { useRouter, useSearchParams } from "next/navigation"
+import { useRouter, useSearchParams, usePathname } from "next/navigation"
 import { SortDropdown, SortOption } from "./SortDropdown"
 import { usePostContext } from "@/context/PostContext"
 
-// This component handles the sort controls and maintains URL sync
-export function FeedSortControls() {
+// Specialized version of sort controls for the user page
+export function UserPageSortControls() {
   const router = useRouter()
   const searchParams = useSearchParams()
+  const pathname = usePathname()
   
   // Get sort from URL or use default
   const sortFromUrl = searchParams.get('sort') as SortOption || "most-disliked"
@@ -30,9 +31,7 @@ export function FeedSortControls() {
     // Update URL to reflect the sort (but don't cause a page refresh)
     const params = new URLSearchParams(searchParams.toString())
     params.set('sort', newSort)
-    
-    // Preserve the following parameter if it exists
-    router.push(`?${params.toString()}`, { scroll: false })
+    router.push(`${pathname}?${params.toString()}`, { scroll: false })
   }
   
   return (

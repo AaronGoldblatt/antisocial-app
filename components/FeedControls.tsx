@@ -3,15 +3,17 @@
 import { useState, useEffect } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 import { SortDropdown, SortOption } from "./SortDropdown"
+import { FollowingToggle } from "./FollowingToggle"
 import { usePostContext } from "@/context/PostContext"
 
-// This component handles the sort controls and maintains URL sync
-export function FeedSortControls() {
+// This component combines all feed controls (sort and filters)
+export function FeedControls() {
   const router = useRouter()
   const searchParams = useSearchParams()
   
-  // Get sort from URL or use default
+  // Get parameters from URL
   const sortFromUrl = searchParams.get('sort') as SortOption || "most-disliked"
+  const followingFromUrl = searchParams.get('following') === 'true'
   
   // Get access to context
   const { sortOption, setSortOption } = usePostContext()
@@ -30,13 +32,12 @@ export function FeedSortControls() {
     // Update URL to reflect the sort (but don't cause a page refresh)
     const params = new URLSearchParams(searchParams.toString())
     params.set('sort', newSort)
-    
-    // Preserve the following parameter if it exists
     router.push(`?${params.toString()}`, { scroll: false })
   }
   
   return (
-    <div className="flex justify-end">
+    <div className="flex flex-wrap items-center justify-between gap-4">
+      <FollowingToggle initialValue={followingFromUrl} />
       <SortDropdown
         currentSort={sortOption}
         onSortChange={handleSortChange}

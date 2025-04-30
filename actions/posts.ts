@@ -352,7 +352,7 @@ export async function hasUserPosted(userId: string) {
 }
 
 // Get posts from users the current user is following (ordered by newest first)
-export async function getFollowingPosts() {
+export async function getFollowingPosts(sortBy: string = "most-disliked") {
   const session = await auth.api.getSession({
     headers: await headers()
   });
@@ -376,10 +376,10 @@ export async function getFollowingPosts() {
     return [];
   }
 
-  // Get posts from followed users
+  // Get posts from followed users with the specified sort order
   const followingPosts = await db.query.posts.findMany({
     where: inArray(posts.userId, followedUserIds),
-    orderBy: [desc(posts.createdAt)], // Order by newest first
+    orderBy: getSortingOrder(sortBy),
     with: {
       user: true
     }

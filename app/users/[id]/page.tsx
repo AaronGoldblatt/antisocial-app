@@ -2,11 +2,11 @@ import { notFound, redirect } from "next/navigation"
 import { auth } from "@/auth"
 import { PostList } from "@/components/PostList"
 import { UserProfile } from "@/components/UserProfile"
-import { FeedSortControls } from "@/components/FeedSortControls"
 import { getUserProfile } from "@/actions/users"
 import { getUserPosts, reactToPost } from "@/actions/posts"
 import { headers } from "next/headers"
 import { SortOption } from "@/components/SortDropdown"
+import { UserPageSortControls } from "@/components/UserPageSortControls"
 
 type UserPageProps = {
   params: {
@@ -52,7 +52,7 @@ export default async function UserPage({ params, searchParams }: UserPageProps) 
             <div className="border-t pt-6">
               <div className="flex items-center justify-between mb-4">
                 <h2 className="text-xl font-bold">Rants</h2>
-                <FeedSortControls />
+                <UserPageSortControls />
               </div>
               
               <PostList 

@@ -718,22 +718,6 @@ button:not(:disabled),
     margin-top: 0.5rem !important;
     gap: 1rem !important;
   }
-}
-
-/* Content layouts for all pages */
-@media (max-width: 767px) {
-  /* Main content container */
-  div[style*="display: flex"][style*="justify-content: center"][style*="width: 100%"][style*="margin: 0 auto"] {
-    padding: 0 !important;
-  }
-  
-  /* Main content area */
-  main[style*="width: 65%"][style*="max-width: 850px"] {
-    width: 100% !important;
-    max-width: 100% !important;
-    padding-left: 1rem !important;
-    padding-right: 1rem !important;
-  }
   
   /* Banner alignment with content */
   header > div > div {
@@ -765,6 +749,19 @@ button:not(:disabled),
     gap: 1rem !important;
   }
   
+  /* Main content container */
+  div[style*="display: flex"][style*="justify-content: center"][style*="width: 100%"][style*="margin: 0 auto"] {
+    padding: 0 !important;
+  }
+  
+  /* Main content area */
+  main[style*="width: 65%"][style*="max-width: 850px"] {
+    width: 100% !important;
+    max-width: 100% !important;
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+  }
+  
   /* All posts and cards */
   .rounded-lg, .rounded-md, .border, .card {
     width: 100% !important;
@@ -773,61 +770,6 @@ button:not(:disabled),
   /* Post and comment sections */
   .post-content, .comment-content {
     padding: 10px !important;
-  }
-  
-  /* Mobile-optimized reaction buttons */
-  .flex.gap-2.pt-2,
-  div:has(> button:has(.ThumbsUp)),
-  div:has(> button:has(.ThumbsDown)),
-  div:has(> button:has(.MiddleFinger)) {
-    flex-wrap: wrap !important;
-    justify-content: space-between !important;
-    gap: 0.75rem !important;
-    padding: 0.75rem !important;
-  }
-  
-  /* Make reaction buttons larger on mobile for easier touch */
-  button.flex.h-9.gap-2.items-center.px-3,
-  button.flex.h-7.gap-1.items-center.px-2,
-  button:has(.ThumbsUp),
-  button:has(.ThumbsDown),
-  button:has(.MiddleFinger),
-  button:has(.super-dislike-icon) {
-    width: auto !important;
-    min-width: 100px !important;
-    max-width: none !important;
-    height: 44px !important;
-    padding: 0 0.75rem !important;
-    flex: 1 1 30% !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-  }
-  
-  /* Increase size of reaction icons */
-  button.flex.h-9.gap-2.items-center.px-3 div,
-  button.flex.h-7.gap-1.items-center.px-2 div,
-  button:has(.ThumbsUp) svg,
-  button:has(.ThumbsDown) svg,
-  .super-dislike-icon,
-  button div.super-dislike-icon {
-    width: 30px !important;
-    min-width: 30px !important;
-    max-width: 30px !important;
-    height: 30px !important;
-    font-size: 24px !important;
-  }
-  
-  /* Make reaction count more visible */
-  button.flex.h-9.gap-2.items-center.px-3 span,
-  button.flex.h-7.gap-1.items-center.px-2 span,
-  button:has(.ThumbsUp) span,
-  button:has(.ThumbsDown) span,
-  button:has(.super-dislike-icon) span {
-    width: auto !important;
-    min-width: 24px !important;
-    font-size: 1rem !important;
-    font-weight: bold !important;
   }
   
   /* Fix any fixed width elements */
@@ -943,5 +885,32 @@ main[style*="width: 65%"][style*="max-width: 850px"] {
   main[style*="width: 65%"][style*="max-width: 850px"] {
     width: 100% !important;
     max-width: 100% !important;
+  }
+}
+
+@media (max-width: 767px) {
+  /* Stack reaction buttons vertically in posts and comments */
+  .flex.gap-2.pt-2 {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: stretch !important; 
+    width: 100% !important;
+    gap: 8px !important;
+  }
+  
+  /* Make each reaction button full width */
+  .flex.gap-2.pt-2 > button {
+    width: 100% !important;
+    justify-content: flex-start !important;
+    margin: 0 !important;
+    height: 44px !important;
+  }
+  
+  /* Ensure icon and text are properly sized and aligned */
+  .flex.gap-2.pt-2 > button > div,
+  .flex.gap-2.pt-2 > button > svg {
+    width: 30px !important;
+    height: 30px !important;
+    margin-right: 10px !important;
   }
 }

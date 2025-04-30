@@ -393,17 +393,16 @@ form.flex.flex-col.gap-3 > div:last-child::before {
 
 /* ==== REACTION BUTTONS STYLING ==== */
 
-/* Base styling for reaction buttons */
-button:has(.ThumbsUp),
-button:has(.ThumbsDown),
-button:has(.AlertTriangle) {
-    border: 1px solid #FF6600 !important;
-    background-color: rgba(255, 102, 0, 0.08) !important;
-    border-radius: 4px !important;
-    padding: 4px 8px !important;
-    transition: all 0.3s cubic-bezier(0.68, -0.55, 0.27, 1.55) !important;
-    position: relative !important;
-    overflow: hidden !important;
+/* Base styling for all reaction buttons - posts and comments */
+button.flex.h-9.gap-2.items-center.px-3,
+button.flex.h-7.gap-1.items-center.px-2 {
+    width: 90px !important;
+    min-width: 90px !important;
+    max-width: 90px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 4px !important;
 }
 
 /* Style for unfilled/unselected reaction buttons */
@@ -430,17 +429,31 @@ button.dark\:bg-green-900 svg {
     transform: none !important;
 }
 
-/* Base styles for reaction buttons to ensure centering */
+/* Base styles for reaction button content */
 button.bg-orange-100 div,
 button.dark\:bg-orange-900 div,
 button.bg-red-100 div,
-button.dark\:bg-red-900 div {
+button.dark\:bg-red-900 div,
+button.bg-green-100 div,
+button.dark\:bg-green-900 div {
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
-    width: 100% !important;
-    height: 100% !important;
+    width: 24px !important;
+    min-width: 24px !important;
+    max-width: 24px !important;
+    height: 24px !important;
     transform-origin: 50% 50% !important;
+}
+
+/* Fixed width for the reaction count span */
+button.flex.h-9.gap-2.items-center.px-3 span,
+button.flex.h-7.gap-1.items-center.px-2 span {
+    width: 30px !important;
+    min-width: 30px !important;
+    max-width: 30px !important;
+    text-align: center !important;
+    font-size: 0.875rem !important;
 }
 
 /* DISLIKE BUTTON: keep wiggle-in-place animation */

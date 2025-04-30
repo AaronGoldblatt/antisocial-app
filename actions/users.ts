@@ -54,7 +54,11 @@ export async function getUserProfile(userId: string) {
   }
 
   return {
-    user,
+    user: {
+      id: user.id,
+      name: user.name,
+      image: user.image
+    },
     followerCount: followerCount[0].count,
     followingCount: followingCount[0].count,
     postCount: postCount[0].count,

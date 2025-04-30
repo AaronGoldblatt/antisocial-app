@@ -11,7 +11,6 @@ interface UserProfileProps {
   user: {
     id: string
     name: string | null
-    email: string | null
     image: string | null
   }
   isFollowing: boolean
@@ -76,7 +75,6 @@ export function UserProfile({
         
         <div className="flex-1">
           <h1 className="text-2xl font-bold">{user.name}</h1>
-          <p className="text-muted-foreground">{user.email}</p>
           
           <div className="mt-2 flex gap-4">
             <div>

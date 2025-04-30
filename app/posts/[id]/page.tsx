@@ -9,12 +9,14 @@ import { reactToComment } from "@/actions/comments"
 import { headers } from "next/headers"
 
 type PostPageProps = {
-  params: {
+  params: Promise<{
     id: string
-  }
+  }>
 }
 
 export default async function PostPage({ params }: PostPageProps) {
+  const { id } = await params;
+  
   const session = await auth.api.getSession({
     headers: await headers()
   });
@@ -25,7 +27,7 @@ export default async function PostPage({ params }: PostPageProps) {
   }
 
   try {
-    const post = await getPost(params.id)
+    const post = await getPost(id)
 
     return (
       <div style={{ display: "flex", justifyContent: "center", width: "100%", margin: "0 auto" }}>

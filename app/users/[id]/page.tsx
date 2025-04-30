@@ -7,12 +7,14 @@ import { getUserPosts, reactToPost } from "@/actions/posts"
 import { headers } from "next/headers"
 
 type UserPageProps = {
-  params: {
+  params: Promise<{
     id: string
-  }
+  }>
 }
 
 export default async function UserPage({ params }: UserPageProps) {
+  const { id } = await params;
+  
   const session = await auth.api.getSession({
     headers: await headers()
   });
@@ -24,8 +26,8 @@ export default async function UserPage({ params }: UserPageProps) {
 
   try {
     const [userProfile, userPosts] = await Promise.all([
-      getUserProfile(params.id),
-      getUserPosts(params.id)
+      getUserProfile(id),
+      getUserPosts(id)
     ])
 
     return (

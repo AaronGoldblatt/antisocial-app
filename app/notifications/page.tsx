@@ -43,7 +43,7 @@ export default async function NotificationsPage() {
             <div className="flex flex-col items-center justify-center rounded-lg border border-dashed p-12 text-center">
               <h3 className="text-2xl font-medium mb-2">No Posts from Stalked Users</h3>
               <p className="text-muted-foreground mb-6">
-                You're not stalking anyone yet or they haven't posted anything.
+                You&apos;re not stalking anyone yet or they haven&apos;t posted anything.
               </p>
               <Link href="/search">
                 <Button>Find Users to Stalk</Button>

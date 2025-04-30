@@ -5,6 +5,11 @@ import { Comment } from "@/database/schema/social"
 import { CommentItem } from "./CommentItem"
 import { ReactionType } from "@/database/schema/social"
 
+interface Reaction {
+  userId: string;
+  type: string;
+}
+
 interface CommentListProps {
   initialComments: Array<Comment & {
     user: {
@@ -20,7 +25,7 @@ interface CommentListProps {
       }
     }
     userReaction?: string | null
-    reactions?: Array<any>
+    reactions?: Reaction[]
   }>
   onReaction: (commentId: string, reactionType: string) => Promise<void>
 }
@@ -77,14 +82,14 @@ export function CommentList({ initialComments, onReaction }: CommentListProps) {
         
         // Find if the current user already reacted
         const currentUserReaction = updatedComment.reactions.find(
-          (reaction: any) => reaction.userId === updatedComment.user.id
+          (reaction: Reaction) => reaction.userId === updatedComment.user.id
         );
 
         if (currentUserReaction) {
           // If the reaction type is the same, remove it
           if (currentUserReaction.type === reactionType) {
             updatedComment.reactions = updatedComment.reactions.filter(
-              (reaction: any) => !(reaction.userId === updatedComment.user.id && reaction.type === reactionType)
+              (reaction: Reaction) => !(reaction.userId === updatedComment.user.id && reaction.type === reactionType)
             );
             updatedComment.userReaction = null;
             

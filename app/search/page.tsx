@@ -1,7 +1,6 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { useRouter } from "next/navigation"
 import Link from "next/link"
 import Image from "next/image"
 import { search } from "@/actions/search"
@@ -11,7 +10,7 @@ import { Button } from "@/components/ui/button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Loader2, Search, User, FileText } from "lucide-react"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 
 // Define types for the data structures
 interface PostUser {
@@ -35,7 +34,6 @@ interface Post {
 }
 
 export default function SearchPage() {
-  const router = useRouter()
   const [query, setQuery] = useState("")
   const [loading, setLoading] = useState(false)
   const [posts, setPosts] = useState<Post[]>([])
@@ -157,7 +155,7 @@ export default function SearchPage() {
                 </div>
                 {users.length === 0 && (
                   <div className="text-center py-8 text-muted-foreground">
-                    No users found matching "{query}"
+                    No users found matching &quot;{query}&quot;
                   </div>
                 )}
               </TabsContent>
@@ -171,7 +169,7 @@ export default function SearchPage() {
                 </div>
                 {posts.length === 0 && (
                   <div className="text-center py-8 text-muted-foreground">
-                    No posts found matching "{query}"
+                    No posts found matching &quot;{query}&quot;
                   </div>
                 )}
               </TabsContent>
@@ -180,7 +178,7 @@ export default function SearchPage() {
           
           {!loading && hasSearched && query && posts.length === 0 && users.length === 0 && !error && (
             <div className="text-center py-8 text-muted-foreground">
-              No results found for "{query}"
+              No results found for &quot;{query}&quot;
             </div>
           )}
           

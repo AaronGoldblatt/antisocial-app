@@ -1,6 +1,5 @@
 "use client"
 
-import { useRouter } from "next/navigation"
 import { useState } from "react"
 import { createPost } from "@/actions/posts"
 import { Button } from "@/components/ui/button"
@@ -10,7 +9,6 @@ import { toast } from "sonner"
 export function WelcomeCreatePost() {
   const [content, setContent] = useState("")
   const [isLoading, setIsLoading] = useState(false)
-  const router = useRouter()
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -78,7 +76,7 @@ export function WelcomeCreatePost() {
           onClick={handleSkip}
           className="text-muted-foreground hover:text-foreground text-sm"
         >
-          I'm a shy loser, just let me in pwease 🥺
+          I&apos;m a shy loser, just let me in pwease 🥺
         </Button>
       </div>
     </div>

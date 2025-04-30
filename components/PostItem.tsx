@@ -117,47 +117,46 @@ export function PostItem({ post, onReaction }: PostItemProps) {
         <Button
           ref={dislikeButtonRef}
           variant="outline"
-          size="sm"
+          size="default"
           className={cn(
-            "flex gap-1",
+            "flex h-9 gap-2 items-center px-3",
             post.userReaction === ReactionType.DISLIKE && "bg-orange-100 dark:bg-orange-900"
           )}
           onClick={() => handleReaction(ReactionType.DISLIKE)}
           disabled={isLoading}
           data-just-clicked={clickedButton === ReactionType.DISLIKE ? "true" : undefined}
         >
-          <DetailedThumbsDown size={18} />
+          <DetailedThumbsDown size={22} />
           <span>{post._count?.reactions.dislike || 0}</span>
         </Button>
         <Button
           ref={superDislikeButtonRef}
           variant="outline"
-          size="sm"
+          size="default"
           className={cn(
-            "flex gap-1",
+            "flex h-9 gap-2 items-center px-3",
             post.userReaction === ReactionType.SUPER_DISLIKE && "bg-red-100 dark:bg-red-900"
           )}
           onClick={() => handleReaction(ReactionType.SUPER_DISLIKE)}
           disabled={isLoading}
           data-just-clicked={clickedButton === ReactionType.SUPER_DISLIKE ? "true" : undefined}
         >
-          <MiddleFinger size={18} />
+          <MiddleFinger size={22} />
           <span>{post._count?.reactions.superDislike || 0}</span>
         </Button>
         <Button
           ref={likeButtonRef}
           variant="outline"
-          size="sm"
+          size="default"
           className={cn(
-            "flex gap-1 scale-90",
+            "flex h-9 gap-2 items-center px-3",
             post.userReaction === ReactionType.LIKE && "bg-green-100 dark:bg-green-900"
           )}
           onClick={() => handleReaction(ReactionType.LIKE)}
           disabled={isLoading}
-          style={{ transform: "scale(0.85)" }}
           data-just-clicked={clickedButton === ReactionType.LIKE ? "true" : undefined}
         >
-          <DetailedThumbsUp size={16} />
+          <DetailedThumbsUp size={20} />
           <span>{post._count?.reactions.like || 0}</span>
         </Button>
         <Link href={`/posts/${post.id}`} passHref>

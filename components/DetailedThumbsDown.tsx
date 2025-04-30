@@ -11,12 +11,15 @@ export function DetailedThumbsDown({ size = 16, className = "" }: DetailedThumbs
   
   return (
     <div 
-      className={`inline-flex items-center justify-center super-dislike-icon ${className}`} 
+      className={`flex items-center justify-center super-dislike-icon ${className}`} 
       style={{ 
         width: size, 
         height: size, 
         fontSize: `${fontSize}px`,
-        lineHeight: 1
+        lineHeight: 1,
+        marginTop: '1px',
+        marginBottom: '4px',
+        padding: '0'
       }}
     >
       👎

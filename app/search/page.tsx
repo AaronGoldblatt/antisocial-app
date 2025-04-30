@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, FormEvent } from "react"
+import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
 import Image from "next/image"
@@ -44,30 +44,39 @@ export default function SearchPage() {
   const [activeTab, setActiveTab] = useState("all")
   const [hasSearched, setHasSearched] = useState(false)
 
-  const handleSearch = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-    if (!query.trim()) return
-    
-    setLoading(true)
-    setError("")
-    setHasSearched(true)
-    
-    try {
-      const result = await search({ query })
-      
-      if (result.error) {
-        setError(result.error)
+  // Search as you type
+  useEffect(() => {
+    const delayDebounceFn = setTimeout(async () => {
+      if (query.trim()) {
+        setLoading(true)
+        setError("")
+        setHasSearched(true)
+        
+        try {
+          const result = await search({ query })
+          
+          if (result.error) {
+            setError(result.error)
+          } else {
+            setPosts(result.posts || [])
+            setUsers(result.users || [])
+          }
+        } catch (err) {
+          console.error("Search error:", err)
+          setError("Failed to perform search")
+        } finally {
+          setLoading(false)
+        }
       } else {
-        setPosts(result.posts || [])
-        setUsers(result.users || [])
+        // Clear results when query is empty
+        setPosts([])
+        setUsers([])
+        setHasSearched(false)
       }
-    } catch (err) {
-      console.error("Search error:", err)
-      setError("Failed to perform search")
-    } finally {
-      setLoading(false)
-    }
-  }
+    }, 300) // 300ms delay to avoid excessive API calls
+
+    return () => clearTimeout(delayDebounceFn)
+  }, [query])
 
   return (
     <div style={{ display: "flex", justifyContent: "center", width: "100%", margin: "0 auto" }}>
@@ -75,18 +84,15 @@ export default function SearchPage() {
         <div className="flex flex-col gap-6" style={{ width: "100%" }}>
           <h1 className="text-3xl font-bold">Search</h1>
           
-          <form onSubmit={handleSearch} className="flex w-full gap-2">
+          <div className="flex w-full">
             <Input
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="Search for posts or users..."
               className="flex-1"
             />
-            <Button type="submit" disabled={loading}>
-              {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Search className="h-4 w-4" />}
-              <span className="ml-2">Search</span>
-            </Button>
-          </form>
+            {loading && <Loader2 className="h-5 w-5 animate-spin ml-2 self-center" />}
+          </div>
           
           {error && (
             <div className="text-red-500">{error}</div>
@@ -175,12 +181,6 @@ export default function SearchPage() {
           {!loading && hasSearched && query && posts.length === 0 && users.length === 0 && !error && (
             <div className="text-center py-8 text-muted-foreground">
               No results found for "{query}"
-            </div>
-          )}
-          
-          {!hasSearched && query && (
-            <div className="text-center py-8 text-muted-foreground">
-              Press Enter to search
             </div>
           )}
           

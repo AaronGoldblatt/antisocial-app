@@ -1,7 +1,7 @@
 "use client"
 
 import Link from "next/link"
-import { usePathname } from "next/navigation"
+import { usePathname, useRouter } from "next/navigation"
 import { useEffect } from "react"
 import Image from "next/image"
 
@@ -21,6 +21,7 @@ interface HeaderProps {
 
 export function Header({ user }: HeaderProps) {
   const pathname = usePathname()
+  const router = useRouter()
   
   // Debug user object
   useEffect(() => {
@@ -31,6 +32,14 @@ export function Header({ user }: HeaderProps) {
   const isAuthPage = pathname?.startsWith('/auth')
   const isWelcomePage = pathname === '/welcome'
   const showNav = !isAuthPage && !isWelcomePage && !!user
+  
+  // Handle search icon click - refresh page if already on /search
+  const handleSearchClick = (e: React.MouseEvent) => {
+    if (pathname === "/search") {
+      e.preventDefault()
+      router.refresh()
+    }
+  }
   
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/90 backdrop-blur-sm">
@@ -65,6 +74,7 @@ export function Header({ user }: HeaderProps) {
                 </Link>
                 <Link
                   href="/search"
+                  onClick={handleSearchClick}
                   className={cn(
                     "flex h-10 w-10 items-center justify-center rounded-md transition-colors hover:bg-muted sm:h-10 sm:w-10",
                     pathname === "/search" && "bg-muted"

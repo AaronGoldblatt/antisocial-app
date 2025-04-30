@@ -37,7 +37,8 @@ export function Header({ user }: HeaderProps) {
   const handleSearchClick = (e: React.MouseEvent) => {
     if (pathname === "/search") {
       e.preventDefault()
-      router.refresh()
+      // Force hard navigation to reset search state
+      window.location.href = "/search"
     }
   }
   

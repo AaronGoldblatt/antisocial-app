@@ -18,7 +18,7 @@ export function DetailedThumbsUp({ size = 16, className = "" }: DetailedThumbsUp
         fontSize: `${fontSize}px`,
         lineHeight: 1,
         marginTop: '1px',
-        marginBottom: '4px',
+        // marginBottom: '4px',
         padding: '0'
       }}
     >

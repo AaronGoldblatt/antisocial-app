@@ -1,0 +1,8 @@
+We need to create a smaller optimized banner image. Please follow these steps:
+
+1. Download the existing banner.png
+2. Use an image optimization tool to compress it to under 100KB
+3. Save the optimized version as banner-small.png in the public directory
+4. Update the header component to use this smaller image
+
+This file is just a reminder - it needs manual intervention to actually create the optimized image. 

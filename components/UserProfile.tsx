@@ -254,13 +254,13 @@ export function UserProfile({
           
           <div className="mt-2 flex gap-4">
             <div>
-              <span className="font-bold">{followerCount}</span> Stalkers
+              <span className="font-bold">{followerCount}</span> {followerCount === 1 ? 'Stalker' : 'Stalkers'}
             </div>
             <div>
               <span className="font-bold">{followingCount}</span> Stalking
             </div>
             <div>
-              <span className="font-bold">{postCount}</span> Rants
+              <span className="font-bold">{postCount}</span> {postCount === 1 ? 'Rant' : 'Rants'}
             </div>
           </div>
         </div>

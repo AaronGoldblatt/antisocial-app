@@ -71,7 +71,7 @@ export default async function UserPage({
             
             <div className="border-t pt-6">
               <div className="flex items-center justify-between mb-4">
-                <h2 className="text-xl font-bold">Rants</h2>
+                <h2 className="text-xl font-bold">{userProfile.postCount === 1 ? 'Rant' : 'Rants'}</h2>
                 <UserPageSortControls />
               </div>
               

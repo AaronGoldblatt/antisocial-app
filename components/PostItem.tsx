@@ -153,7 +153,7 @@ export function PostItem({ post, onReaction }: PostItemProps) {
         </Button>
         <Link href={`/posts/${post.id}`} passHref>
           <Button variant="ghost" size="sm">
-            {post._count?.comments || 0} Comments
+            {post._count?.comments || 0} {(post._count?.comments || 0) === 1 ? 'Comment' : 'Comments'}
           </Button>
         </Link>
       </div>

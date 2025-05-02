@@ -14,6 +14,16 @@ const inter = Inter({ subsets: ["latin"] })
 export const metadata: Metadata = {
     title: "AntiSocial",
     description: "A social media platform focused on dislikes",
+    icons: {
+        icon: '/icon.png',
+        apple: '/icon.png',
+    },
+    openGraph: {
+        images: ['/icon.png'],
+    },
+    twitter: {
+        images: ['/icon.png'],
+    },
 }
 
 // Ensure this layout is not cached and re-renders on every request

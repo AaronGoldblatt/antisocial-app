@@ -29,9 +29,10 @@ export async function middleware(request: NextRequest) {
     }
 
     // For non-auth pages, check if the user has posted in this session
-    // Exclude welcome page, landing page, API routes, and static assets to avoid redirect loops
+    // Exclude root page, welcome page, landing page, API routes, and static assets to avoid redirect loops
     if (!request.nextUrl.pathname.startsWith('/auth') && 
         !request.nextUrl.pathname.startsWith('/api') &&
+        request.nextUrl.pathname !== '/' &&
         request.nextUrl.pathname !== '/welcome' &&
         request.nextUrl.pathname !== '/landing') {
         

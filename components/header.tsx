@@ -90,7 +90,7 @@ export function Header({ user }: HeaderProps) {
         <div className="flex h-16 items-center justify-between px-4" style={{ width: "65%", maxWidth: "850px" }}>
           <div className="flex items-center gap-6">
             <Link
-              href="/"
+              href="/landing"
               className="font-bold text-xl"
             >
               {renderBanner()}

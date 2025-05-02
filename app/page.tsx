@@ -22,9 +22,9 @@ export default async function Home({
     headers: await headers()
   });
   
-  // Redirect to login if not authenticated
+  // Redirect to landing page if not authenticated
   if (!session?.user) {
-    redirect("/auth/sign-in")
+    redirect("/landing")
   }
 
   // Get sort parameter and sanitize it

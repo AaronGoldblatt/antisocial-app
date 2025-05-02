@@ -469,12 +469,12 @@ function getSortingOrder(sortBy: string) {
       return [
         // Sort by (dislike + 2*super_dislike) first, then by creation date (newest first)
         desc(sql.raw(`
-          (SELECT COUNT(*) FROM "reactions" 
+          (SELECT COALESCE(COUNT(*), 0) FROM "reactions" 
            WHERE "reactions"."post_id" = "posts"."id" 
            AND "reactions"."type" = 'dislike')
-          + 2 * (SELECT COUNT(*) FROM "reactions" 
+          + (2 * (SELECT COALESCE(COUNT(*), 0) FROM "reactions" 
            WHERE "reactions"."post_id" = "posts"."id" 
-           AND "reactions"."type" = 'super_dislike')
+           AND "reactions"."type" = 'super_dislike'))
         `)),
         desc(posts.createdAt)
       ]
@@ -483,12 +483,12 @@ function getSortingOrder(sortBy: string) {
       return [
         // Sort by (dislike + 2*super_dislike) ascending, then by creation date (newest first)
         sql.raw(`
-          (SELECT COUNT(*) FROM "reactions" 
+          (SELECT COALESCE(COUNT(*), 0) FROM "reactions" 
            WHERE "reactions"."post_id" = "posts"."id" 
            AND "reactions"."type" = 'dislike')
-          + 2 * (SELECT COUNT(*) FROM "reactions" 
+          + (2 * (SELECT COALESCE(COUNT(*), 0) FROM "reactions" 
            WHERE "reactions"."post_id" = "posts"."id" 
-           AND "reactions"."type" = 'super_dislike')
+           AND "reactions"."type" = 'super_dislike'))
         `),
         desc(posts.createdAt)
       ]
@@ -502,12 +502,12 @@ function getSortingOrder(sortBy: string) {
     default:
       return [
         desc(sql.raw(`
-          (SELECT COUNT(*) FROM "reactions" 
+          (SELECT COALESCE(COUNT(*), 0) FROM "reactions" 
            WHERE "reactions"."post_id" = "posts"."id" 
            AND "reactions"."type" = 'dislike')
-          + 2 * (SELECT COUNT(*) FROM "reactions" 
+          + (2 * (SELECT COALESCE(COUNT(*), 0) FROM "reactions" 
            WHERE "reactions"."post_id" = "posts"."id" 
-           AND "reactions"."type" = 'super_dislike')
+           AND "reactions"."type" = 'super_dislike'))
         `)),
         desc(posts.createdAt)
       ]

@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { useEffect, useState } from "react"
+import { useEffect } from "react"
 import Image from "next/image"
 // Import the banner image directly to ensure proper bundling
 import bannerImage from "../public/banner.png"
@@ -11,8 +11,6 @@ import { cn } from "@/lib/utils"
 import { Home, Users, Search } from "lucide-react"
 import { CustomUserButton } from "./CustomUserButton"
 import { NotificationBadge } from "./NotificationBadge"
-import { Banner } from "./Banner"
-import { InlineBanner } from "./InlineBanner"
 
 interface HeaderProps {
   user?: {
@@ -25,21 +23,10 @@ interface HeaderProps {
 
 export function Header({ user }: HeaderProps) {
   const pathname = usePathname()
-  const [imageLoaded, setImageLoaded] = useState(true)
-  const [imageError, setImageError] = useState(false)
-  const [useInlineBanner, setUseInlineBanner] = useState(false)
   
   // Debug user object
   useEffect(() => {
     console.log("Header user:", user)
-    
-    // Check if we're in production (Vercel) by examining the URL
-    if (typeof window !== 'undefined') {
-      if (window.location.href.includes('vercel.app')) {
-        console.log("Using inline banner for Vercel deployment")
-        setUseInlineBanner(true)
-      }
-    }
   }, [user])
 
   // Don't show navigation on auth pages or welcome page
@@ -56,32 +43,18 @@ export function Header({ user }: HeaderProps) {
     }
   }
   
-  // Determine which banner to display
+  // Simple banner display using the imported image
   const renderBanner = () => {
-    if (useInlineBanner) {
-      // Use inline banner with base64 data for production
-      return <InlineBanner />
-    } else if (imageError) {
-      // Use SVG banner as second fallback
-      return <Banner />
-    } else {
-      // Try the imported image first (should work in both dev and production)
-      return (
-        <Image
-          src={bannerImage}
-          alt="AntiSocial Banner"
-          width={220}
-          height={40}
-          style={{ maxWidth: "220px", height: "auto" }}
-          priority
-          onError={() => {
-            console.error("Banner image failed to load");
-            setImageLoaded(false);
-            setImageError(true);
-          }}
-        />
-      )
-    }
+    return (
+      <Image
+        src={bannerImage}
+        alt="AntiSocial Banner"
+        width={220}
+        height={40}
+        style={{ maxWidth: "220px", height: "auto" }}
+        priority
+      />
+    )
   }
   
   return (

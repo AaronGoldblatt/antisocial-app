@@ -17,7 +17,7 @@ export const auth = betterAuth({
         },
         // Add transformer to remove image from session data
         transformer: {
-            serialize: (user) => {
+            serialize: (user: Record<string, unknown>) => {
                 // Remove the image field from session to prevent large cookies
                 if (user && typeof user === 'object' && 'image' in user) {
                     const { image, ...userWithoutImage } = user;
@@ -25,7 +25,7 @@ export const auth = betterAuth({
                 }
                 return user;
             },
-            deserialize: (data) => data
+            deserialize: (data: unknown) => data
         }
     },
     emailAndPassword: {

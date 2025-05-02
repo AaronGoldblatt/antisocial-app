@@ -98,7 +98,7 @@ export function UserProfile({
       firstReader.onload = async () => {
         try {
           // Create an image element to get dimensions
-          const img = new Image()
+          const img = document.createElement('img') // Use DOM API instead of Image constructor
           img.src = firstReader.result as string
           
           await new Promise((resolve) => {

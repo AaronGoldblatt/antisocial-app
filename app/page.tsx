@@ -8,11 +8,12 @@ import { headers } from "next/headers"
 import { SortOption } from "@/components/SortDropdown"
 import { FeedControls } from "@/components/FeedControls"
 
-type HomeProps = {
-  searchParams: { [key: string]: string | string[] | undefined }
-}
-
-export default async function Home({ searchParams }: HomeProps) {
+// Define as a proper Next.js Page
+export default async function Home({
+  searchParams,
+}: {
+  searchParams: Record<string, string | string[] | undefined>;
+}) {
   // Check if user is authenticated
   const session = await auth.api.getSession({
     headers: await headers()
@@ -23,14 +24,18 @@ export default async function Home({ searchParams }: HomeProps) {
     redirect("/auth/sign-in")
   }
 
-  // Try using await with searchParams
-  const params = await searchParams
+  // Explicitly await searchParams
+  const params = await searchParams;
   
   // Get sort parameter from URL or use default
-  const sortBy = (params.sort as SortOption) || "most-disliked"
+  // Validate that it's a valid sort option
+  const validSortOptions = ["most-disliked", "least-disliked", "newest", "oldest"];
+  const sortParam = typeof params.sort === 'string' ? params.sort : "";
+  const sortBy = validSortOptions.includes(sortParam) ? sortParam as SortOption : "most-disliked";
   
   // Get following filter from URL
-  const showFollowing = params.following === 'true'
+  const followingParam = typeof params.following === 'string' ? params.following : "";
+  const showFollowing = followingParam === 'true';
 
   // Get posts based on filter - either all feed posts or just following posts
   const posts = showFollowing 

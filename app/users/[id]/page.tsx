@@ -8,15 +8,15 @@ import { headers } from "next/headers"
 import { SortOption } from "@/components/SortDropdown"
 import { UserPageSortControls } from "@/components/UserPageSortControls"
 
-type UserPageProps = {
-  params: {
-    id: string
-  }
-  searchParams: { [key: string]: string | string[] | undefined }
-}
-
-export default async function UserPage({ params, searchParams }: UserPageProps) {
-  // Wait for params
+// Define as a proper Next.js Page
+export default async function UserPage({
+  params,
+  searchParams,
+}: {
+  params: { id: string };
+  searchParams: Record<string, string | string[] | undefined>;
+}) {
+  // Explicitly await params
   const routeParams = await params;
   const id = routeParams.id;
   
@@ -29,11 +29,14 @@ export default async function UserPage({ params, searchParams }: UserPageProps) 
     redirect("/auth/sign-in")
   }
 
-  // Wait for searchParams
-  const urlParams = await searchParams
+  // Explicitly await searchParams
+  const urlParams = await searchParams;
   
   // Get sort parameter from URL or use default
-  const sortBy = (urlParams.sort as SortOption) || "most-disliked"
+  // Validate that it's a valid sort option
+  const validSortOptions = ["most-disliked", "least-disliked", "newest", "oldest"];
+  const sortParam = typeof urlParams.sort === 'string' ? urlParams.sort : "";
+  const sortBy = validSortOptions.includes(sortParam) ? sortParam as SortOption : "most-disliked";
 
   try {
     const [userProfile, userPosts] = await Promise.all([

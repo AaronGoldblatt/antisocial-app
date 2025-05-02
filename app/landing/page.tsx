@@ -47,7 +47,7 @@ export default async function LandingPage() {
               <div className="p-3 border border-muted rounded-md flex flex-col items-center">
                 <div className="text-3xl mb-2">👍</div>
                 <h4 className="font-medium">Like</h4>
-                <p className="text-sm text-muted-foreground text-center">For content that you like. But let's be real, that's not why you're here. Go to Facebook or Twitter for that bullshit.</p>
+                <p className="text-sm text-muted-foreground text-center">For content that you like. But let&apos;s be real, that&apos;s not why you&apos;re here. Go to Facebook or Twitter for that bullshit.</p>
               </div>
               
               <div className="p-3 border border-muted rounded-md flex flex-col items-center">

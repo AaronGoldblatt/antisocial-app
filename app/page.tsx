@@ -8,11 +8,11 @@ import { headers } from "next/headers"
 import { SortOption } from "@/components/SortDropdown"
 import { FeedControls } from "@/components/FeedControls"
 
-// Define as a proper Next.js Page
+// Define the component with Next.js standard page props
 export default async function Home({
   searchParams,
 }: {
-  searchParams: Record<string, string | string[] | undefined>;
+  searchParams: any;
 }) {
   // Check if user is authenticated
   const session = await auth.api.getSession({
@@ -24,7 +24,7 @@ export default async function Home({
     redirect("/auth/sign-in")
   }
 
-  // Explicitly await searchParams
+  // Explicitly await searchParams (required for production build)
   const params = await searchParams;
   
   // Get sort parameter from URL or use default

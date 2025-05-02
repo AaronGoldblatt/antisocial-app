@@ -8,15 +8,15 @@ import { headers } from "next/headers"
 import { SortOption } from "@/components/SortDropdown"
 import { UserPageSortControls } from "@/components/UserPageSortControls"
 
-// Define as a proper Next.js Page
+// Define the component with Next.js standard page props
 export default async function UserPage({
   params,
   searchParams,
 }: {
-  params: { id: string };
-  searchParams: Record<string, string | string[] | undefined>;
+  params: any;
+  searchParams: any;
 }) {
-  // Explicitly await params
+  // Explicitly await params (required for production build)
   const routeParams = await params;
   const id = routeParams.id;
   
@@ -29,7 +29,7 @@ export default async function UserPage({
     redirect("/auth/sign-in")
   }
 
-  // Explicitly await searchParams
+  // Explicitly await searchParams (required for production build)
   const urlParams = await searchParams;
   
   // Get sort parameter from URL or use default

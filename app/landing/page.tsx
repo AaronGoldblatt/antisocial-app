@@ -11,7 +11,7 @@ export default async function LandingPage() {
   
   return (
     <div className="flex flex-col items-center justify-center min-h-[calc(100vh-4rem)] px-4 pt-8">
-      <div className="max-w-3xl w-full space-y-8 text-center">
+      <div className="max-w-3xl w-full space-y-8 text-center mb-16">
         <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold tracking-tight mt-8">
           Welcome to <span className="text-orange-500 dark:text-orange-400">AntiSocial</span>
         </h1>
@@ -93,7 +93,7 @@ export default async function LandingPage() {
           </div>
         )}
         
-        <p className="text-xs text-muted-foreground mt-8">
+        <p className="text-xs text-muted-foreground mt-8 pb-8">
           By signing up, you agree to subject yourself to the unfiltered opinions of terrible people.
           <br />Mental health not guaranteed. Proceed at your own risk.
         </p>

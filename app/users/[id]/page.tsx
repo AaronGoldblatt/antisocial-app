@@ -8,6 +8,9 @@ import { headers } from "next/headers"
 import { SortOption } from "@/components/SortDropdown"
 import { UserPageSortControls } from "@/components/UserPageSortControls"
 
+// Valid sort options to validate against
+const VALID_SORT_OPTIONS = ["most-disliked", "least-disliked", "newest", "oldest"];
+
 // Define the component with Next.js standard page props
 export default async function UserPage({
   params,
@@ -16,33 +19,42 @@ export default async function UserPage({
   params: any;
   searchParams: any;
 }) {
-  // Explicitly await params (required for production build)
-  const routeParams = await params;
-  const id = routeParams.id;
-  
-  const session = await auth.api.getSession({
-    headers: await headers()
-  });
-  
-  // Redirect to login if not authenticated
-  if (!session?.user) {
-    redirect("/auth/sign-in")
-  }
-
-  // Explicitly await searchParams (required for production build)
-  const urlParams = await searchParams;
-  
-  // Get sort parameter from URL or use default
-  // Validate that it's a valid sort option
-  const validSortOptions = ["most-disliked", "least-disliked", "newest", "oldest"];
-  const sortParam = typeof urlParams.sort === 'string' ? urlParams.sort : "";
-  const sortBy = validSortOptions.includes(sortParam) ? sortParam as SortOption : "most-disliked";
-
   try {
+    // Handle both development (object) and production (Promise) modes safely
+    const routeParams = params ? (params.then ? await params : params) : {};
+    const userId = routeParams.id;
+    
+    if (!userId) {
+      notFound();
+    }
+    
+    const session = await auth.api.getSession({
+      headers: await headers()
+    });
+    
+    // Redirect to login if not authenticated
+    if (!session?.user) {
+      redirect("/auth/sign-in")
+    }
+
+    // Get sort parameter and sanitize it
+    let sortBy: SortOption = "most-disliked"; // Default sort option
+    
+    // Handle both development (object) and production (Promise) modes
+    const urlParams = searchParams ? (searchParams.then ? await searchParams : searchParams) : {};
+    
+    // Extract and validate the sort parameter
+    if (urlParams.sort && typeof urlParams.sort === 'string') {
+      const sortParam = urlParams.sort as string;
+      if (VALID_SORT_OPTIONS.includes(sortParam)) {
+        sortBy = sortParam as SortOption;
+      }
+    }
+
     const [userProfile, userPosts] = await Promise.all([
-      getUserProfile(id),
-      getUserPosts(id, sortBy)
-    ])
+      getUserProfile(userId),
+      getUserPosts(userId, sortBy)
+    ]);
 
     return (
       <div style={{ display: "flex", justifyContent: "center", width: "100%", margin: "0 auto" }}>
@@ -71,9 +83,9 @@ export default async function UserPage({
           </div>
         </main>
       </div>
-    )
+    );
   } catch (error) {
-    console.error("Error fetching user profile:", error)
-    notFound()
+    console.error("Error fetching user profile:", error);
+    notFound();
   }
 } 

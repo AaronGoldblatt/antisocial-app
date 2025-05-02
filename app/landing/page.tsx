@@ -25,7 +25,7 @@ export default async function LandingPage() {
           
           <div className="space-y-4">
             <div className="border-l-4 border-orange-500 pl-4 py-1">
-              <h3 className="font-medium">Rants, Not Recommendations</h3>
+              <h3 className="font-medium">Rants, Not Posts</h3>
               <p className="text-muted-foreground">Express your deepest frustrations without the fake positivity of other platforms. We don&apos;t care about your vacation photos.</p>
             </div>
             

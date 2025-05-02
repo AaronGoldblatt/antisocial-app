@@ -77,7 +77,7 @@ export function NotificationBadge({ pathname }: NotificationBadgeProps) {
           </span>
         )}
       </div>
-      <span className="sr-only">Notifications</span>
+      <span className="sr-only">Annoyances</span>
     </Link>
   );
 } 

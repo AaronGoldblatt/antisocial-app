@@ -25,7 +25,7 @@ export default async function NotificationsPage() {
       <main className="py-6" style={{ width: "65%", maxWidth: "850px" }}>
         <div className="flex flex-col gap-6" style={{ width: "100%" }}>
           <div className="flex justify-between items-center">
-            <h1 className="text-3xl font-bold">Notifications</h1>
+            <h1 className="text-3xl font-bold">Annoyances</h1>
             <Link href="/">
               <Button variant="outline">View Regular Feed</Button>
             </Link>
@@ -33,7 +33,7 @@ export default async function NotificationsPage() {
           
           {followingPosts.length > 0 ? (
             <div className="flex flex-col gap-4">
-              <h2 className="text-xl font-medium">New Posts from Users You Stalk</h2>
+              <h2 className="text-xl font-medium">New Rants from Users You Stalk</h2>
               <PostList 
                 initialPosts={followingPosts} 
                 onReaction={reactToPost} 
@@ -41,7 +41,7 @@ export default async function NotificationsPage() {
             </div>
           ) : (
             <div className="flex flex-col items-center justify-center rounded-lg border border-dashed p-12 text-center">
-              <h3 className="text-2xl font-medium mb-2">No Posts from Stalked Users</h3>
+              <h3 className="text-2xl font-medium mb-2">No Rants from Stalked Users</h3>
               <p className="text-muted-foreground mb-6">
                 You&apos;re not stalking anyone yet or they haven&apos;t posted anything.
               </p>

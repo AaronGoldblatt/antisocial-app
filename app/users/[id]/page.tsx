@@ -16,7 +16,9 @@ type UserPageProps = {
 }
 
 export default async function UserPage({ params, searchParams }: UserPageProps) {
-  const { id } = params;
+  // Wait for params
+  const routeParams = await params;
+  const id = routeParams.id;
   
   const session = await auth.api.getSession({
     headers: await headers()
@@ -27,8 +29,11 @@ export default async function UserPage({ params, searchParams }: UserPageProps) 
     redirect("/auth/sign-in")
   }
 
+  // Wait for searchParams
+  const urlParams = await searchParams
+  
   // Get sort parameter from URL or use default
-  const sortBy = (searchParams.sort as SortOption) || "most-disliked"
+  const sortBy = (urlParams.sort as SortOption) || "most-disliked"
 
   try {
     const [userProfile, userPosts] = await Promise.all([

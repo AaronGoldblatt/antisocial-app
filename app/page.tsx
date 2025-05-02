@@ -23,11 +23,14 @@ export default async function Home({ searchParams }: HomeProps) {
     redirect("/auth/sign-in")
   }
 
+  // Try using await with searchParams
+  const params = await searchParams
+  
   // Get sort parameter from URL or use default
-  const sortBy = (searchParams.sort as SortOption) || "most-disliked"
+  const sortBy = (params.sort as SortOption) || "most-disliked"
   
   // Get following filter from URL
-  const showFollowing = searchParams.following === 'true'
+  const showFollowing = params.following === 'true'
 
   // Get posts based on filter - either all feed posts or just following posts
   const posts = showFollowing 

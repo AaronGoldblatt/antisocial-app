@@ -98,10 +98,28 @@ export default function SearchPage() {
           
           {(posts.length > 0 || users.length > 0) && (
             <Tabs defaultValue="all" value={activeTab} onValueChange={setActiveTab}>
-              <TabsList className="grid w-full grid-cols-3">
-                <TabsTrigger value="all">All Results</TabsTrigger>
-                <TabsTrigger value="posts">Posts ({posts.length})</TabsTrigger>
-                <TabsTrigger value="users">Users ({users.length})</TabsTrigger>
+              <TabsList className="grid w-full grid-cols-3 bg-[#111111] border border-[#333333]">
+                <TabsTrigger 
+                  value="all" 
+                  className="relative group cursor-pointer transition-all hover:bg-[#222222] data-[state=active]:bg-[#222222] data-[state=active]:text-[#FF9900] data-[state=active]:font-bold"
+                >
+                  All Results
+                  <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-0 h-[2px] bg-[#FF6600] transition-all duration-300 group-hover:w-4/5 group-data-[state=active]:w-full group-data-[state=active]:h-[3px] group-data-[state=active]:bg-[#FF9900]"></span>
+                </TabsTrigger>
+                <TabsTrigger 
+                  value="posts" 
+                  className="relative group cursor-pointer transition-all hover:bg-[#222222] data-[state=active]:bg-[#222222] data-[state=active]:text-[#FF9900] data-[state=active]:font-bold"
+                >
+                  Posts ({posts.length})
+                  <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-0 h-[2px] bg-[#FF6600] transition-all duration-300 group-hover:w-4/5 group-data-[state=active]:w-full group-data-[state=active]:h-[3px] group-data-[state=active]:bg-[#FF9900]"></span>
+                </TabsTrigger>
+                <TabsTrigger 
+                  value="users" 
+                  className="relative group cursor-pointer transition-all hover:bg-[#222222] data-[state=active]:bg-[#222222] data-[state=active]:text-[#FF9900] data-[state=active]:font-bold"
+                >
+                  Users ({users.length})
+                  <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-0 h-[2px] bg-[#FF6600] transition-all duration-300 group-hover:w-4/5 group-data-[state=active]:w-full group-data-[state=active]:h-[3px] group-data-[state=active]:bg-[#FF9900]"></span>
+                </TabsTrigger>
               </TabsList>
               
               <TabsContent value="all" className="space-y-4 mt-4">

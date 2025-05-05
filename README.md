@@ -111,7 +111,9 @@ Find specific content or users by keyword.
 
 ## Design
 
-AntiSocial features a distinctive dark theme with orange/red accents that reinforces its contrarian attitude. The angry face logo visually represents the platform's focus on expressing negative emotions.
+AntiSocial features a distinctive dark theme with orange/red accents that reinforces its contrarian attitude. Our angry dislike button mascot, Boo, visually represents the platform's focus on expressing negative emotions.
+
+![Boo the AntiSocial Mascot](screenshots/boo.png)
 
 ## Purpose
 

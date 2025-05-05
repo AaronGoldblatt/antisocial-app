@@ -2,7 +2,7 @@ import { redirect } from "next/navigation"
 import { auth } from "@/lib/auth"
 import { headers } from "next/headers"
 import { getFollowingPosts } from "@/actions/posts"
-import { PostList } from "@/components/PostList"
+import { NotificationsPostList } from "@/components/NotificationsPostList"
 import { reactToPost } from "@/actions/posts"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
@@ -34,7 +34,7 @@ export default async function NotificationsPage() {
           {followingPosts.length > 0 ? (
             <div className="flex flex-col gap-4">
               <h2 className="text-xl font-medium">New Rants from Users You Stalk</h2>
-              <PostList 
+              <NotificationsPostList 
                 initialPosts={followingPosts} 
                 onReaction={reactToPost} 
               />

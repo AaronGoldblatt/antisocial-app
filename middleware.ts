@@ -1,4 +1,6 @@
 import { type NextRequest, NextResponse } from "next/server"
+import { auth } from "@/lib/auth"
+import { headers } from "next/headers"
 
 export async function middleware(request: NextRequest) {
     // Handle sign-out redirection by allowing the request through
@@ -32,6 +34,18 @@ export async function middleware(request: NextRequest) {
         
         const redirectUrl = new URL('/auth/sign-in', request.url)
         return NextResponse.redirect(redirectUrl)
+    }
+
+    // Check if user is at root and not authenticated
+    if (request.nextUrl.pathname === '/') {
+        // Check for authentication via session
+        const session = await auth.api.getSession({
+            headers: await headers()
+          });
+
+          if (!session?.user) {
+            return NextResponse.redirect(new URL('/landing', request.url))
+        }
     }
 
     // For non-auth pages, check if the user has posted in this session

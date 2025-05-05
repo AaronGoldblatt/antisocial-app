@@ -17,6 +17,12 @@ export async function middleware(request: NextRequest) {
         return response
     }
 
+    // Handle successful auth callback - redirect to welcome page
+    if (request.nextUrl.pathname.startsWith('/auth/callback')) {
+        // Let the auth flow continue, but the callback should redirect to welcome
+        return NextResponse.next()
+    }
+
     // Handle other auth redirects as needed
     if (request.nextUrl.pathname.startsWith('/auth') && 
         request.nextUrl.pathname !== '/auth/sign-in' && 
@@ -29,10 +35,10 @@ export async function middleware(request: NextRequest) {
     }
 
     // For non-auth pages, check if the user has posted in this session
-    // Exclude root page, welcome page, landing page, API routes, and static assets to avoid redirect loops
+    // Exclude welcome page, landing page, API routes, and static assets to avoid redirect loops
+    // NOTE: We now check the root page ('/') too
     if (!request.nextUrl.pathname.startsWith('/auth') && 
         !request.nextUrl.pathname.startsWith('/api') &&
-        request.nextUrl.pathname !== '/' &&
         request.nextUrl.pathname !== '/welcome' &&
         request.nextUrl.pathname !== '/landing') {
         

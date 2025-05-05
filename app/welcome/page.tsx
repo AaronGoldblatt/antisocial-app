@@ -3,6 +3,10 @@ import { auth } from "@/lib/auth"
 import { headers } from "next/headers"
 import { WelcomeCreatePost } from "../../components/WelcomeCreatePost"
 
+// Add dynamic config to ensure page is never cached
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 export default async function WelcomePage() {
   // Check if user is authenticated
   const session = await auth.api.getSession({

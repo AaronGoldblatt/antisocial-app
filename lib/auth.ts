@@ -39,6 +39,11 @@ export const auth = betterAuth({
                 signIn: "/welcome",
                 signUp: "/welcome"
             }
+        },
+        // Add additional callback to ensure redirection works properly
+        afterAuth: {
+            signIn: "/welcome",
+            signUp: "/welcome"
         }
     },
     plugins: [

@@ -4,7 +4,7 @@ import { PostList } from "@/components/PostList"
 import { CreatePost } from "@/components/CreatePost"
 import { getFeedPosts, getFollowingPosts } from "@/actions/posts"
 import { reactToPost } from "@/actions/posts"
-import { headers } from "next/headers"
+import { headers, cookies } from "next/headers"
 import { SortOption } from "@/components/SortDropdown"
 import { FeedControls } from "@/components/FeedControls"
 
@@ -25,6 +25,15 @@ export default async function Home({
   // Redirect to landing page if not authenticated
   if (!session?.user) {
     redirect("/landing")
+  }
+
+  // Check if the user has posted this session
+  const cookieStore = await cookies();
+  const hasPostedThisSession = cookieStore.get('has_posted_this_session')?.value === 'true';
+  
+  // Redirect to welcome page if they haven't posted this session
+  if (!hasPostedThisSession) {
+    redirect("/welcome")
   }
 
   // Get sort parameter and sanitize it

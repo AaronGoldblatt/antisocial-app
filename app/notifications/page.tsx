@@ -18,7 +18,7 @@ export default async function NotificationsPage() {
   }
 
   // Fetch posts from users the current user is following
-  const followingPosts = await getFollowingPosts();
+  const followingPosts = await getFollowingPosts("newest");
 
   return (
     <div style={{ display: "flex", justifyContent: "center", width: "100%", margin: "0 auto" }}>

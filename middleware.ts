@@ -34,22 +34,13 @@ export async function middleware(request: NextRequest) {
         return NextResponse.redirect(redirectUrl)
     }
 
-    // Check for authentication via session cookie
-    const authSession = request.cookies.get('better_auth_session')
-    const isAuthenticated = !!authSession?.value
-
-    // If at root path and not authenticated, redirect to landing page
-    if (request.nextUrl.pathname === '/' && !isAuthenticated) {
-        return NextResponse.redirect(new URL('/landing', request.url))
-    }
-
     // For non-auth pages, check if the user has posted in this session
     // Exclude welcome page, landing page, API routes, and static assets to avoid redirect loops
+    // NOTE: We now check the root page ('/') too
     if (!request.nextUrl.pathname.startsWith('/auth') && 
         !request.nextUrl.pathname.startsWith('/api') &&
         request.nextUrl.pathname !== '/welcome' &&
-        request.nextUrl.pathname !== '/landing' &&
-        isAuthenticated) {
+        request.nextUrl.pathname !== '/landing') {
         
         // Check if they've posted this session
         const hasPostedThisSession = request.cookies.get('has_posted_this_session')?.value === 'true'
